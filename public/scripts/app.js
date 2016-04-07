@@ -30,7 +30,7 @@ $(document).ready(function() {
     $(this).val('');
   });
 
-  $('#postTarget').on('click', '.like-button', function(e){
+  $('#postTarget').on('click', '.like-post-button', function(e){
     e.preventDefault();
     var $post = $(this).closest('.post');
     var postId = $post.data('post-id');
@@ -46,14 +46,76 @@ $(document).ready(function() {
     });
   });
 
+  $('#postTarget').on('click', '.delete-post-button', function(e){
+    e.preventDefault();
+    var $post = $(this).closest('.post');
+    var postId = $post.data('post-id');
+    $.ajax({
+      method: 'DELETE',
+      url: '/api/posts/' + postId,
+      success: deletePostSuccess,
+      error: deletePostError
+    });
+  });
+
+  $('#postTarget').on('click', '.edit-post-button', function(e){
+    e.preventDefault();
+    var $post = $(this).closest('.post');
+    var postId = $post.data('post-id');
+    $(this).toggleClass('hidden');
+    $post.find('.update-post-button').toggleClass('hidden');
+    $post.find('.edit-post-form').toggleClass('hidden');
+    $post.find('p').toggleClass('hidden');
+  });
+
+  $('#postTarget').on('click', '.update-post-button', function(e){
+    e.preventDefault();
+    var $post = $(this).closest('.post');
+    var postId = $post.data('post-id');
+    $.ajax({
+      method: 'PUT',
+      url: '/api/posts/' + postId,
+      data: {
+        text: $post.find('.edit-post-form').val(),
+        likes: 0
+      },
+      success: updatePostSuccess,
+      error: updatePostError
+    });
+  });
 
 
 });
 
-function likePostSuccess(post){
-  var symbol = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-button').text();
+function updatePostSuccess(post){
+  var symbol = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button').text();
   renderSinglePost(post);
-  var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-button');
+  var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
+    if (symbol === "+"){
+      $likeButton.text("+");
+      $likeButton.val("1");
+    } else {
+      $likeButton.text("-");
+      $likeButton.val("-1");
+    }
+}
+
+function updatePostError(err){
+  console.log(err);
+}
+
+function deletePostSuccess(post){
+  $('#postTarget').find('[data-post-id="' + post._id + '"]').remove();
+}
+
+function deletePostError(err){
+  console.log(err);
+}
+
+function likePostSuccess(post){
+  var symbol = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button').text();
+  renderSinglePost(post);
+  var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
     if (symbol === "+"){
       $likeButton.text("-");
       $likeButton.val("-1");

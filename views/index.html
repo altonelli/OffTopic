@@ -67,20 +67,22 @@
 
           <div class="post" data-post-id={{_id}}>
             <div class="row">
-              <button class="btn btn-danger btn-xs pull-right">x</button>
+              <button class="btn btn-danger btn-xs pull-right delete-post-button">x</button>
               <h4>{{author}} at {{date}}</h4>
             </div>
             <div class="row">
               <div class="post-text col-xs-10 col-xs-offset-1">
                 <p>{{text}}</p>
+                <input type="text" class="edit-post-form form-control hidden" name="text" value="{{text}}">
               </div>
             </div>
             <div class="row">
               <div class="btn-group post-bar" role="group" aria-label="">
-                <button type="button" class="btn btn-primary col-xs-1 like-button" name="likes" value="1">+</button>
-                <button type="button" class="btn btn-info col-xs-1">{{likes}}</button>
+                <button type="button" class="btn btn-primary col-xs-1 like-post-button" name="likes" value="1">+</button>
+                <button type="button" class="btn btn-info col-xs-1 like-post-display">{{likes}}</button>
                 <button type="button" class="btn btn-default col-xs-9">Comment</button>
-                <button type="button" class="btn btn-default col-xs-1"><span class="glyphicon glyphicon-pencil"></span></button>
+                <button type="button" class="btn btn-warning col-xs-1 edit-post-button" style="border-radius: 0px 4px 4px 0px"><span class="glyphicon glyphicon-pencil"></span></button>
+                <button type="button" class="btn btn-info col-xs-1 update-post-button hidden">Save</button>
               </div>
             </div>
           </div>

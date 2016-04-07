@@ -2,6 +2,11 @@
   background-color: black;
 }*/
 
+.edit-post-button{
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
 #postTarget{
   padding: 10px;
   /*background-color: grey;*/

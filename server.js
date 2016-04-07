@@ -39,6 +39,8 @@ app.post('/api/posts', controllers.posts.create);
 
 app.put('/api/posts/:post', controllers.posts.update);
 
+app.delete('/api/posts/:post', controllers.posts.destroy);
+
 
 
 

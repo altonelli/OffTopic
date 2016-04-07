@@ -33,7 +33,11 @@ function show(req, res) {
 }
 
 function destroy(req, res) {
-
+  db.Post.findOneAndRemove({_id: req.params.post}, function(err, post){
+    if(err){res.status(500).json("Sorry error on our end while looking for that post.");}
+    else if (!post) { res.status(400).json("Sorry, could not find that post.");}
+    else { res.status(200).json(post);}
+  });
 }
 
 function update(req, res) {
