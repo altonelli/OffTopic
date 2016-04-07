@@ -1,0 +1,39 @@
+/*body{
+  background-color: black;
+}*/
+
+#postTarget{
+  padding: 10px;
+  /*background-color: grey;*/
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.post{
+  margin:10px;
+  background-color: white;
+}
+
+.comment-button{
+
+}
+
+.post-bar{
+  width:100%;
+}
+
+.btn-lg{
+  height: 54px;
+};
+
+#newPostForm{
+  width:100%
+}
+
+.form-group{
+  width: 100%;
+}
+
+.input-group{
+  width: 100%;
+}
