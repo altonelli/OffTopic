@@ -29,7 +29,11 @@ function create(req, res) {
 }
 
 function show(req, res) {
-
+  db.Post.findOne({_id:req.params.post}).populate('Comment').exec(function(err,post){
+    if(err){res.status(500).json("Sorry, something went wrong on our end while looking for that post.");}
+    else if (!post) { res.status(400).json("Sorry, we couldn't find that post");}
+    else { res.status(200).json(post); }
+  });
 }
 
 function destroy(req, res) {

@@ -12,6 +12,8 @@
   <!-- VENDOR SCRIPTS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+
 
   <!-- APPLICATION SCRIPTS -->
   <script src="scripts/app.js"></script>
@@ -65,36 +67,134 @@
 
           <script id="posts-template" type="text/x-handlebars-template">
 
-          <div class="post" data-post-id={{_id}}>
-            <div class="row">
-              <button class="btn btn-danger btn-xs pull-right delete-post-button">x</button>
-              <h4>{{author}} at {{date}}</h4>
-            </div>
-            <div class="row">
-              <div class="post-text col-xs-10 col-xs-offset-1">
-                <p>{{text}}</p>
-                <input type="text" class="edit-post-form form-control hidden" name="text" value="{{text}}">
+            <div class="post" data-post-id={{_id}}>
+              <div class="only-post">
+              <div class="row">
+
+                <div class="btn-group pull-right">
+                  <button type="button" class="btn btn-warning edit-post-button">Edit</button>
+                  <button type="button" class="btn btn-info update-post-button hidden" style="border-radius: 4px 0px 0px 4px">Save</button>
+                  <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="glyphicon glyphicon-menu-down"></span>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item btn btn-danger pull-right delete-post-button">Delete</button>
+                  </div>
+                </div>
+                <!-- <button class="btn btn-danger btn-xs pull-right delete-post-button">x</button> -->
+                <h4>{{author}} at {{date}}</h4>
+              </div>
+              <div class="row">
+                <div class="post-text col-xs-10 col-xs-offset-1">
+                  <p>{{text}}</p>
+                  <input type="text" class="edit-post-form form-control hidden" name="text" value="{{text}}">
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-group post-bar" role="group" aria-label="">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-primary like-post-button" name="likes" value="1">+</button>
+                    <button type="button" class="btn btn-info like-post-display">{{likes}}</button>
+                  </span>
+                  <form class="comment-form">
+                    <input name="text" class="form-control comment-input" style="border-radius: 0px" placeholder="Comment"/>
+                    <span class="input-group-btn">
+                      <button class="btn btn-primary">Comment</button>
+                    </span>
+                  </form>
+
+                </div>
               </div>
             </div>
-            <div class="row">
-              <div class="btn-group post-bar" role="group" aria-label="">
-                <button type="button" class="btn btn-primary col-xs-1 like-post-button" name="likes" value="1">+</button>
-                <button type="button" class="btn btn-info col-xs-1 like-post-display">{{likes}}</button>
-                <button type="button" class="btn btn-default col-xs-9">Comment</button>
-                <button type="button" class="btn btn-warning col-xs-1 edit-post-button" style="border-radius: 0px 4px 4px 0px"><span class="glyphicon glyphicon-pencil"></span></button>
-                <button type="button" class="btn btn-info col-xs-1 update-post-button hidden">Save</button>
+            <div class="only-comment">
+              {{#each comments}}
+              <div class="row comment" data-comment-id="{{_id}}">
+                <div class="input-group comment-bar" role="group" aria-label="">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-primary like-comment-button" name="likes" value="1">+</button>
+                    <button type="button" class="btn btn-info like-comment-display">{{likes}}</button>
+                  </span>
+                  <div class="comment-content">
+                  <p class="col-xs-9 comment-text">{{author}}: {{text}}</p>
+
+                  <form class="comment-edit-form">
+                    <div class="comment-edit-padding">
+                    <input name="text" class="form-control comment-edit-input hidden" style="border-radius: 0px" placeholder="Comment" value="{{text}}"/>
+                  </div>
+                </form>
               </div>
+                    <span class="input-group-btn comment-dropdown">
+                      <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-warning edit-comment-button">Edit</button>
+                        <button type="button" class="btn btn-info update-comment-button hidden" style="border-radius: 0px">Save</button>
+                        <button type="button" class="btn btn-danger delete-comment-button">
+                          <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                      </div>
+                    </span>
+
+                </div>
+              </div>
+              {{/each}}
             </div>
-          </div>
+            </div>
 
-        </script>
-
-      </div>
+          </script>
 
 
+          <script id="comment-template" type="text/x-handlebars-template">
+<div class="row comment" data-comment-id="{{_id}}">
+  <div class="input-group comment-bar" role="group" aria-label="">
+    <span class="input-group-btn">
+      <button type="button" class="btn btn-primary like-comment-button" name="likes" value="1">+</button>
+      <button type="button" class="btn btn-info like-comment-display">{{likes}}</button>
+    </span>
+    <div class="comment-content">
+    <p class="col-xs-9 comment-text">{{author}}: {{text}}</p>
 
+    <form class="comment-edit-form">
+      <div class="comment-edit-padding">
+      <input name="text" class="form-control comment-edit-input hidden" style="border-radius: 0px" placeholder="Comment" value="{{text}}"/>
     </div>
+  </form>
+</div>
+      <span class="input-group-btn comment-dropdown">
+        <div class="btn-group pull-right">
+          <button type="button" class="btn btn-warning edit-comment-button">Edit</button>
+          <button type="button" class="btn btn-info update-comment-button hidden" style="border-radius: 0px">Save</button>
+          <button type="button" class="btn btn-danger delete-comment-button">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        </div>
+      </span>
+
   </div>
 </div>
+</script>
+
+
+
+
+
+
+
+        </div>
+
+            <!-- <button type="button" class="btn btn-default col-xs-9 comment-button" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content='<form class="form-inline comment-form hidden"><input class="form-control"/><button class="btn btn-sm btn-primary">Comment</button></form>'>Comment</button> -->
+
+            <!-- <button type="button" class="btn btn-default col-xs-9 comment-button">Comment</button> -->
+
+            <!-- <form class="form-inline comment-form hidden"><input name="text" class="form-control"/><button class="btn btn-sm btn-primary">Comment</button></form> -->
+
+            <!-- <button type="button" class="btn btn-warning col-xs-1 edit-post-button" style="border-radius: 0px 4px 4px 0px"><span class="glyphicon glyphicon-pencil"></span></button> -->
+            <!-- <button type="button" class="btn btn-info col-xs-1 update-post-button hidden">Comment</button> -->
+
+            <!-- data-container="body" data-toggle="popover" data-placement="bottom" data-content='<form><input type="text"/></form>' -->
+
+
+
+      </div>
+    </div>
+  </div>
 </body>
 </html>

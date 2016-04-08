@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
   var CommentSchema = new Schema({
     author: String,
     text: String,
+    date: String,
     likes: Number
   });
 

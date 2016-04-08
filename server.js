@@ -35,12 +35,19 @@ app.get('/', function homepage (req, res) {
 
 app.get('/api/posts', controllers.posts.index);
 
+app.get('/api/posts/:post', controllers.posts.show);
+
 app.post('/api/posts', controllers.posts.create);
 
 app.put('/api/posts/:post', controllers.posts.update);
 
 app.delete('/api/posts/:post', controllers.posts.destroy);
 
+app.post('/api/posts/:post/comments', controllers.comments.create);
+
+app.put('/api/posts/:post/comments/:comment', controllers.comments.update);
+
+app.delete('/api/posts/:post/comments/:comment', controllers.comments.destroy);
 
 
 

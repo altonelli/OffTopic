@@ -1,5 +1,5 @@
 /*body{
-  background-color: black;
+background-color: black;
 }*/
 
 .edit-post-button{
@@ -19,12 +19,62 @@
   background-color: white;
 }
 
-.comment-button{
+.comment-dropdown{
+  width:86px;
+}
+.delete-comment-button{
+  width:32px;
+  padding-left: 8px;
+}
+.comment-form{
+  display:inline-flex;
+  border-radius: 0px;
+  width:100%;
+}
 
+.update-comment-button{
+  width:56px;
+}
+.edit-comment-button{
+  width:56px;
+}
+
+.comment-edit-input{
+  width: 100%;
 }
 
 .post-bar{
   width:100%;
+  padding-right: 80px;
+}
+.comment-bar{
+  width: 100%;
+}
+
+.edit-post-button{
+  border-radius: 4px 0px 0px 4px;
+}
+.comment-content{
+  /*padding-right:37px;*/
+}
+.comment-text{
+  width: 100%;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  white-space: nowrap;
+  vertical-align: left;
+  border: 1px solid transparent;
+  border-color: #ccc;
+}
+
+.dropdown-menu{
+  min-width: 0;
+  padding: 0px;
+  border: 0px;
 }
 
 .btn-lg{
