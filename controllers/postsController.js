@@ -1,7 +1,7 @@
 var db = require('../models');
 
 function index(req, res) {
-  db.Post.find({}).populate('author').populate('likes').populate('comments.author').exec(function(err,posts){
+  db.Post.find({}).populate('author likes comments.author comments.likes').exec(function(err,posts){
     if (err) { res.status(500).json("Sorry, something went wrong on our end while finding the posts."); }
     else if (!posts) { res.status(400).json("Sorry, we couldn't find those posts."); }
     else {

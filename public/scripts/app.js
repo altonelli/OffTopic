@@ -22,7 +22,7 @@ $(document).ready(function() {
   // var likeSource = $('#like-display-template').html();
   // likeTemplate = Handlebars.compile(likeSource);
 
-    $('.like-post-display').popover();
+
 
   $.ajax({
     method: 'GET',
@@ -58,11 +58,35 @@ $(document).ready(function() {
     });
   });
 
-  $('#postTarget').on('click', '.like-display-button', function(e){
-    // e.preventDefault();
-    $(this).popover('show');
+  $('#postTarget').on('mouseover', '.like-post-display', function(e){
+    e.preventDefault();
+    $(this).popover({
+      html: true,
+      title: "Likes",
+      content: function(){
+        if($(this).closest('.post').find('.like-popover').html().trim() === ""){
+          return "Shit Post";
+        } else {
+          return $(this).closest('.post').find('.like-popover').html();
+        }
+      }
+    });
   });
 
+  $('#postTarget').on('mouseover', '.like-comment-display', function(e){
+    e.preventDefault();
+    $(this).popover({
+      html: true,
+      title: "Likes",
+      content: function(){
+        if($(this).closest('.comment').find('.like-popover').html().trim() === ""){
+          return "Shit Comment";
+        } else {
+          return $(this).closest('.comment').find('.like-popover').html();
+        }
+      }
+    });
+  });
 
   $('#postTarget').on('click', '.delete-post-button', function(e){
     e.preventDefault();
