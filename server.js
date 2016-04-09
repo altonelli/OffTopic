@@ -69,7 +69,7 @@ app.set('view engine', 'hbs');
 // sign up new user, then log them in
 // hashes and salts password, saves new user to db
 app.post('/signup', function (req, res) {
-  User.register(new User({ username: req.body.username }), req.body.password,
+  User.register(new User({ username: req.body.username, image: req.body.image }), req.body.password,
     function (err, newUser) {
       passport.authenticate('local')(req, res, function() {
         res.redirect('/');
@@ -85,15 +85,15 @@ app.get('/login', function (req, res) {
 
 // log in user
 app.post('/login', passport.authenticate('local'), function (req, res) {
-  console.log(req.user);
+  // console.log(req.user);
   res.redirect('/');
 });
 
 // log out user
 app.get('/logout', function (req, res) {
-  console.log("BEFORE logout", req.user);
+  // console.log("BEFORE logout", req.user);
   req.logout();
-  console.log("AFTER logout", req.user);
+  // console.log("AFTER logout", req.user);
   res.redirect('/');
 });
 
@@ -127,6 +127,10 @@ app.post('/api/posts/:post/comments', controllers.comments.create);
 app.put('/api/posts/:post/comments/:comment', controllers.comments.update);
 
 app.delete('/api/posts/:post/comments/:comment', controllers.comments.destroy);
+
+app.get('/api/users/:user', controllers.users.show);
+
+app.put('/api/users/:user', controllers.users.update);
 
 
 

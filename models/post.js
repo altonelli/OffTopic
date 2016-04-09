@@ -4,10 +4,16 @@ var Schema = mongoose.Schema;
 var Comment = require("./comment.js");
 
 var PostSchema = new Schema({
-  author: String,
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   date: String,
   text: String,
-  likes: Number,
+  likes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   comments: [Comment.schema]
 });
 

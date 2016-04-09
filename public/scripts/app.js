@@ -1,6 +1,9 @@
 var postTemplate;
 var $postList;
 var commentTemplate;
+var foundUserTemplate;
+var $foundUserList;
+
 
 
 
@@ -8,10 +11,13 @@ var commentTemplate;
 $(document).ready(function() {
   console.log('app.js loaded!');
   $postList = $('#postTarget');
+  $foundUserList = $('.found-user-modal-body');
   var postSource = $('#posts-template').html();
   postTemplate = Handlebars.compile(postSource);
   var commentSource = $('#comment-template').html();
   commentTemplate = Handlebars.compile(commentSource);
+  var foundUserSource = $('#found-user-template').html();
+  foundUserTemplate = Handlebars.compile(foundUserSource);
 
 
   $.ajax({
@@ -43,7 +49,7 @@ $(document).ready(function() {
       method: 'PUT',
       url: '/api/posts/' + postId,
       data: {
-        text: $post.find('.post-text').text(),
+        text: $post.find('.edit-post-form').val(),
         likes: $(this).val()
       },
       success: likePostSuccess,
@@ -93,13 +99,12 @@ $(document).ready(function() {
 
   $('#postTarget').on('submit', '.comment-form', function(e){
     e.preventDefault();
-    console.log(e);
     var postId = $(this).closest('.post').data('post-id');
-    $.ajax({
+    var newComment =$.ajax({
       method: 'POST',
       url: '/api/posts/' + postId + '/comments',
       data: {
-        author: 'Arthur',
+        author: user,
         text: $(this).find('.comment-input').val(),
         likes: 0
       },
@@ -107,7 +112,8 @@ $(document).ready(function() {
       error: createCommentError
     });
     $('.comment-input').val('');
-    $.get('/api/posts/' + postId).success(renderSinglePost);
+    console.log(postId);
+    $.when(newComment).done($.get('/api/posts/' + postId).success(renderSinglePost));
   });
 
   $('#postTarget').on('click', '.edit-comment-button', function(e){
@@ -120,7 +126,6 @@ $(document).ready(function() {
   });
 
   $('#postTarget').on('submit', '.comment-edit-form', function(e){
-    console.log(e);
     e.preventDefault();
     var $post = $(this).closest('.post');
     var postId = $post.data('post-id');
@@ -140,7 +145,6 @@ $(document).ready(function() {
   });
 
   $('#postTarget').on('click', '.update-comment-button', function(e){
-    console.log(e);
     e.preventDefault();
     var $post = $(this).closest('.post');
     var postId = $post.data('post-id');
@@ -191,9 +195,79 @@ $(document).ready(function() {
     });
   });
 
+  $('.user-search').on('submit', function(e){
+    e.preventDefault();
+    console.log("user",$('.user-search-input').val());
+    $.ajax({
+      method: 'GET',
+      url: '/api/users/' + $('.user-search-input').val(),
+      success: searchUserSuccess,
+      error: searchUserError
+    });
+    $('.user-search-input').val('');
+  });
+
+  $('.found-user-modal-body').on('click', '.add-friend-button', function(e){
+    e.preventDefault();
+    console.log(e);
+    console.log("user",user._id);
+    console.log("requested",$(this).closest('.row').data('user-id'));
+    $.ajax({
+    method: 'PUT',
+    url: '/api/users/' + user._id,
+    data: {
+      _id: $(this).closest('.row').data('user-id'),
+      type: "add"
+    },
+    success: addFriendSuccess,
+    error: addFriendError
+    });
+  });
+
+  $('.found-user-modal-body').on('click', '.delete-friend-button', function(e){
+    e.preventDefault();
+    console.log(e);
+    console.log("user",user._id);
+    console.log("requested",$(this).closest('.row').data('user-id'));
+    $.ajax({
+    method: 'PUT',
+    url: '/api/users/' + user._id,
+    data: {
+      _id: $(this).closest('.row').data('user-id'),
+      type: "remove"
+    },
+    success: removeFriendSuccess,
+    error: removeFriendError
+    });
+  });
 
 
 });
+
+function addFriendSuccess(data){
+  console.log(data);
+  var newFriendId = data.friends[user.friends.length-1]._id;
+  $('.found-user-modal').find("[data-user-id='" + newFriendId + "']").find('.add-friend-button').toggleClass("hidden");
+  $('.found-user-modal').find("[data-user-id='" + newFriendId + "']").find('.delete-friend-button').toggleClass("hidden");
+}
+
+function addFriendError(err){
+  console.log(err);
+}
+
+function searchUserSuccess(users){
+  $foundUserList.empty();
+  users.forEach(function(user){
+    foundUserHtml = foundUserTemplate(user);
+    console.log(foundUserHtml);
+    $foundUserList.append(foundUserHtml);
+  });
+  $('.found-user-modal').modal('show');
+}
+
+function searchUserError(err){
+  console.log(err);
+}
 
 function deleteCommentSuccess(commentId){
   // console.log($('#postTarget').find('[data-comment-id="' + commentId + '"]'));
@@ -243,6 +317,7 @@ function updateCommentError(err){
 
 function createCommentSuccess(comment){
   console.log(comment);
+
 }
 
 function createCommentError(err){
@@ -266,8 +341,8 @@ function updatePostError(err){
   console.log(err);
 }
 
-function deletePostSuccess(post){
-  $('#postTarget').find('[data-post-id="' + post._id + '"]').remove();
+function deletePostSuccess(postId){
+  $('#postTarget').find('[data-post-id="' + postId + '"]').remove();
 }
 
 function deletePostError(err){
@@ -300,6 +375,7 @@ function getAllPostError(err){
 }
 
 function newPostSuccess(post){
+  console.log(post.author);
   renderPost(post);
 }
 
@@ -323,8 +399,9 @@ function renderSingleCommentInPlace(comment){
 
 function renderSinglePost(post){
   var postHtml = postTemplate(post);
-  // console.log(postHtml);
-  // console.log($('#postTarget').find('[data-post-id="' + post._id + '"]').html());
+  console.log(post);
+  console.log(postHtml);
+  console.log(post._id);
   $('#postTarget').find('[data-post-id="' + post._id + '"]').html(postHtml);
   // initPopOver(post._id);
 }
