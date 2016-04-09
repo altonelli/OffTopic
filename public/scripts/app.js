@@ -21,7 +21,7 @@ $(document).ready(function() {
   foundUserTemplate = Handlebars.compile(foundUserSource);
   // var likeSource = $('#like-display-template').html();
   // likeTemplate = Handlebars.compile(likeSource);
-
+  console.log(user);
 
 
   $.ajax({
@@ -240,12 +240,9 @@ $(document).ready(function() {
     console.log("user",user._id);
     console.log("requested",$(this).closest('.row').data('user-id'));
     $.ajax({
-    method: 'PUT',
-    url: '/api/users/' + user._id,
-    data: {
-      _id: $(this).closest('.row').data('user-id'),
-      type: "add"
-    },
+    method: 'POST',
+    url: '/api/users/' + user._id + '/friends/' + $(this).closest('.row').data('user-id'),
+    data: null,
     success: addFriendSuccess,
     error: addFriendError
     });
@@ -257,12 +254,9 @@ $(document).ready(function() {
     console.log("user",user._id);
     console.log("requested",$(this).closest('.row').data('user-id'));
     $.ajax({
-    method: 'PUT',
-    url: '/api/users/' + user._id,
-    data: {
-      _id: $(this).closest('.row').data('user-id'),
-      type: "remove"
-    },
+    method: 'DELETE',
+    url: '/api/users/' + user._id + '/friends/' + $(this).closest('.row').data('user-id'),
+    data: null,
     success: removeFriendSuccess,
     error: removeFriendError
     });
@@ -271,23 +265,37 @@ $(document).ready(function() {
 
 });
 
-function addFriendSuccess(data){
-  console.log(data);
-  var newFriendId = data.friends[user.friends.length-1]._id;
-  $('.found-user-modal').find("[data-user-id='" + newFriendId + "']").find('.add-friend-button').toggleClass("hidden");
-  $('.found-user-modal').find("[data-user-id='" + newFriendId + "']").find('.delete-friend-button').toggleClass("hidden");
+function removeFriendSuccess(friend){
+  console.log(friend);
+  $('.found-user-modal').find("[data-user-id='" + friend._id + "']").find('.add-friend-button').toggleClass("hidden");
+  $('.found-user-modal').find("[data-user-id='" + friend._id + "']").find('.delete-friend-button').toggleClass("hidden");
+}
+
+function removeFriendError(err){
+  console.log(err);
+}
+
+function addFriendSuccess(friend){
+  console.log (friend);
+  $('.found-user-modal').find("[data-user-id='" + friend._id + "']").find('.add-friend-button').toggleClass("hidden");
+  $('.found-user-modal').find("[data-user-id='" + friend._id + "']").find('.delete-friend-button').toggleClass("hidden");
 }
 
 function addFriendError(err){
   console.log(err);
 }
 
-function searchUserSuccess(users){
+function searchUserSuccess(foundUsers){
   $foundUserList.empty();
-  users.forEach(function(user){
-    foundUserHtml = foundUserTemplate(user);
-    console.log(foundUserHtml);
+  foundUsers.forEach(function(foundUser){
+    foundUserHtml = foundUserTemplate(foundUser);
     $foundUserList.append(foundUserHtml);
+    user.friends.forEach(function(friend){
+      if ( friend.toString() === foundUser._id.toString() ){
+        $('.found-user-modal').find("[data-user-id='" + foundUser._id + "']").find('.add-friend-button').toggleClass("hidden");
+        $('.found-user-modal').find("[data-user-id='" + foundUser._id + "']").find('.delete-friend-button').toggleClass("hidden");
+      }
+    });
   });
   $('.found-user-modal').modal('show');
 }

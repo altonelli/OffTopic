@@ -130,7 +130,9 @@ app.delete('/api/posts/:post/comments/:comment', controllers.comments.destroy);
 
 app.get('/api/users/:user', controllers.users.show);
 
-app.put('/api/users/:user', controllers.users.update);
+app.post('/api/users/:user/friends/:friend', controllers.friends.create);
+
+app.delete('/api/users/:user/friends/:friend', controllers.friends.destroy);
 
 app.put('/api/posts/:post/likes/:like', controllers.postLikes.update);
 
