@@ -3,6 +3,7 @@ var $postList;
 var commentTemplate;
 var foundUserTemplate;
 var $foundUserList;
+var likeTemplate;
 
 
 
@@ -18,7 +19,10 @@ $(document).ready(function() {
   commentTemplate = Handlebars.compile(commentSource);
   var foundUserSource = $('#found-user-template').html();
   foundUserTemplate = Handlebars.compile(foundUserSource);
+  // var likeSource = $('#like-display-template').html();
+  // likeTemplate = Handlebars.compile(likeSource);
 
+    $('.like-post-display').popover();
 
   $.ajax({
     method: 'GET',
@@ -47,15 +51,18 @@ $(document).ready(function() {
     var postId = $post.data('post-id');
     $.ajax({
       method: 'PUT',
-      url: '/api/posts/' + postId,
-      data: {
-        text: $post.find('.edit-post-form').val(),
-        likes: $(this).val()
-      },
+      url: '/api/posts/' + postId + '/likes/' + user._id,
+      data: null,
       success: likePostSuccess,
       error: likePostError
     });
   });
+
+  $('#postTarget').on('click', '.like-display-button', function(e){
+    // e.preventDefault();
+    $(this).popover('show');
+  });
+
 
   $('#postTarget').on('click', '.delete-post-button', function(e){
     e.preventDefault();
@@ -77,7 +84,7 @@ $(document).ready(function() {
     $(this).toggleClass('hidden');
     $post.find('.update-post-button').toggleClass('hidden');
     $post.find('.edit-post-form').toggleClass('hidden');
-    $post.find('p').toggleClass('hidden');
+    $post.find('.post-text-display').toggleClass('hidden');
   });
 
   $('#postTarget').on('click', '.update-post-button', function(e){
@@ -90,7 +97,6 @@ $(document).ready(function() {
       url: '/api/posts/' + postId,
       data: {
         text: $post.find('.edit-post-form').val(),
-        likes: 0
       },
       success: updatePostSuccess,
       error: updatePostError
@@ -113,7 +119,9 @@ $(document).ready(function() {
     });
     $('.comment-input').val('');
     console.log(postId);
-    $.when(newComment).done($.get('/api/posts/' + postId).success(renderSinglePost));
+    $.when(newComment).done(function(){
+      $.get('/api/posts/' + postId).success(renderSinglePost);
+    });
   });
 
   $('#postTarget').on('click', '.edit-comment-button', function(e){
@@ -137,7 +145,6 @@ $(document).ready(function() {
       url: '/api/posts/' + postId + '/comments/' + commentId,
       data: {
         text: $comment.find('.comment-edit-input').val(),
-        likes: 0
       },
       success: updateCommentSuccess,
       error: updateCommentError
@@ -156,7 +163,6 @@ $(document).ready(function() {
       url: '/api/posts/' + postId + '/comments/' + commentId,
       data: {
         text: $comment.find('.comment-edit-input').val(),
-        likes: 0
       },
       success: updateCommentSuccess,
       error: updateCommentError
@@ -171,11 +177,8 @@ $(document).ready(function() {
     var commentId = $comment.data('comment-id');
     $.ajax({
       method: 'PUT',
-      url: '/api/posts/' + postId + '/comments/' + commentId,
-      data: {
-        text: $comment.find('.comment-edit-input').val(),
-        likes: $(this).val()
-      },
+      url: '/api/posts/' + postId + '/comments/' + commentId + '/likes/' + user._id,
+      data: null,
       success: likeCommentSuccess,
       error: likeCommentError
     });
@@ -279,16 +282,18 @@ function deleteCommentError(err){
 }
 
 function likeCommentSuccess(comment){
-  console.log(comment);
-  var symbol = $('#postTarget').find('[data-comment-id="' + comment._id + '"]').find('.like-comment-button').text();
   renderSingleCommentInPlace(comment);
   var $likeButton = $('#postTarget').find('[data-comment-id="' + comment._id + '"]').find('.like-comment-button');
-  if (symbol === "+"){
+  var liked;
+  comment.likes.forEach(function(like){
+    if (like._id.toString() === user._id.toString()) {
+      liked = true;
+    }
+  });
+  if(liked){
     $likeButton.text("-");
-    $likeButton.val("-1");
   } else {
     $likeButton.text("+");
-    $likeButton.val("1");
   }
 }
 
@@ -297,16 +302,18 @@ function likeCommentError(err){
 }
 
 function updateCommentSuccess(comment){
-  console.log(comment);
-  var symbol = $('#postTarget').find('[data-comment-id="' + comment._id + '"]').find('.like-comment-button').text();
   renderSingleCommentInPlace(comment);
   var $likeButton = $('#postTarget').find('[data-comment-id="' + comment._id + '"]').find('.like-comment-button');
-  if (symbol === "+"){
-    $likeButton.text("+");
-    $likeButton.val("1");
-  } else {
+  var liked;
+  comment.likes.forEach(function(like){
+    if (like._id.toString() === user._id.toString()) {
+      liked = true;
+    }
+  });
+  if(liked){
     $likeButton.text("-");
-    $likeButton.val("-1");
+  } else {
+    $likeButton.text("+");
   }
 }
 
@@ -325,15 +332,19 @@ function createCommentError(err){
 }
 
 function updatePostSuccess(post){
-  var symbol = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button').text();
+  // console.log('post',post);
   renderSinglePost(post);
   var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
-  if (symbol === "+"){
-    $likeButton.text("+");
-    $likeButton.val("1");
-  } else {
+  var liked;
+  post.likes.forEach(function(like){
+    if (like._id.toString() === user._id.toString()) {
+      liked = true;
+    }
+  });
+  if(liked){
     $likeButton.text("-");
-    $likeButton.val("-1");
+  } else {
+    $likeButton.text("+");
   }
 }
 
@@ -350,15 +361,19 @@ function deletePostError(err){
 }
 
 function likePostSuccess(post){
-  var symbol = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button').text();
+  // console.log('post',post);
   renderSinglePost(post);
   var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
-  if (symbol === "+"){
+  var liked;
+  post.likes.forEach(function(like){
+    if (like._id.toString() === user._id.toString()) {
+      liked = true;
+    }
+  });
+  if(liked){
     $likeButton.text("-");
-    $likeButton.val("-1");
   } else {
     $likeButton.text("+");
-    $likeButton.val("1");
   }
 }
 
@@ -384,24 +399,25 @@ function newPostError(err){
 }
 
 function initPopOver(postId){
-  $('#postTarget').find('[data-post-id="' + postId + '"]').find('.comment-button').popover({
+  $('#postTarget').find('[data-post-id="' + postId + '"]').find('.like-display-button').popover({
     placement: 'bottom',
-    title: 'Add a comment',
+    title: 'Likes',
     html: true,
-    content: $('.comment-form').html()
+    content: $('#postTarget').find('[data-post-id="' + postId + '"]').find('.like-popover').html()
   });
 }
 
 function renderSingleCommentInPlace(comment){
   var commentHtml = commentTemplate(comment);
+  console.log("before",$('#postTarget').find('[data-comment-id="' + comment._id + '"]').clone(true).html());
+  console.log("replace by",commentHtml);
   $('#postTarget').find('[data-comment-id="' + comment._id + '"]').html(commentHtml);
 }
 
 function renderSinglePost(post){
   var postHtml = postTemplate(post);
-  console.log(post);
-  console.log(postHtml);
-  console.log(post._id);
+  // console.log(postHtml);
+  // console.log($('#postTarget').find('[data-post-id="' + post._id + '"]').html());
   $('#postTarget').find('[data-post-id="' + post._id + '"]').html(postHtml);
   // initPopOver(post._id);
 }

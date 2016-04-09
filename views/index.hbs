@@ -92,7 +92,7 @@
                 </div>
                 <div class="row">
                   <div class="post-text col-xs-10 col-xs-offset-1">
-                    <p>\{{text}}</p>
+                    <p class="post-text-display">\{{text}}</p>
                     <input type="text" class="edit-post-form form-control hidden" name="text" value="\{{text}}">
                   </div>
                 </div>
@@ -100,7 +100,12 @@
                   <div class="input-group post-bar" role="group" aria-label="">
                     <span class="input-group-btn">
                       <button type="button" class="btn btn-primary like-post-button" name="likes" value="1">+</button>
-                      <button type="button" class="btn btn-info like-post-display">\{{likes.length}}</button>
+                      <button type="button" class="btn btn-info like-post-display" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-placement="bottom" data-content="And here's some amazing content. It's very engaging. Right?">\{{likes.length}}</button>
+                      <div class="hide like-popover">
+                        \{{#each likes}}
+                        <p>\{{username}}</p>
+                        \{{/each}}
+                      </div>
                     </span>
                     <form class="comment-form">
                       <input name="text" class="form-control comment-input" style="border-radius: 0px" placeholder="Comment"/>
@@ -154,9 +159,14 @@
                 <span class="input-group-btn">
                   <button type="button" class="btn btn-primary like-comment-button" name="likes" value="1">+</button>
                   <button type="button" class="btn btn-info like-comment-display">\{{likes.length}}</button>
+                  <div class="hidden like-popover">
+                    \{{#each likes}}
+                    <p>\{{username}}</p>
+                    \{{/each}}
+                  </div>
                 </span>
                 <div class="comment-content">
-                  <p class="col-xs-9 comment-text">\{{author}}: \{{text}}</p>
+                  <p class="col-xs-9 comment-text">\{{author.username}}: \{{text}}</p>
 
                   <form class="comment-edit-form">
                     <div class="comment-edit-padding">
@@ -179,15 +189,15 @@
           </script>
 
 
-            <div class="modal fade found-user-modal" tabindex="-1" role="dialog">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Here is what we found:</h4>
-                  </div>
-                  <div class="found-user-modal-body">
-                    <script id="found-user-template" type="text/x-handlebars-template">
+          <div class="modal fade found-user-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">Here is what we found:</h4>
+                </div>
+                <div class="found-user-modal-body">
+                  <script id="found-user-template" type="text/x-handlebars-template">
                     <div class="row" data-user-id=\{{_id}}>
                       <img  class="profile-image responsive col-xs-2" src=\{{image}}>
                       <p class="col-xs-7">\{{username}}</p>
@@ -195,13 +205,17 @@
                       <button class="btn btn-danger remove-friend-button hidden col-xs-3">Remove as Friend</button>
                     </div>
                   </script>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
-                </div><!-- /.modal-content -->
-              </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->
+
+
+
+
 
 
         </div>

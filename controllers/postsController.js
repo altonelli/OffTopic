@@ -41,12 +41,11 @@ function show(req, res) {
 }
 
 function destroy(req, res) {
-  db.Post.findOne({_id: req.params.post}, function(err, post){
+  db.Post.findOne({_id: req.params.post}).populate('author').exec(function(err, post){
     if(err){res.status(500).json("Sorry error on our end while looking for that post.");}
     else if (!post) { res.status(400).json("Sorry, could not find that post.");}
     else {
       var postId = post._id;
-      post.populate('author');
       if(req.user._id.toString() === post.author._id.toString()){
         post.remove();
         res.status(200).json(postId);
@@ -58,23 +57,18 @@ function destroy(req, res) {
 }
 
 function update(req, res) {
-  db.Post.findOne({_id: req.params.post}, function(err,post){
+  db.Post.findOne({_id: req.params.post}).populate('author').populate('comments').exec(function(err,post){
     if (err) { res.status(500).json("Sorry something went wrongon our end while creating that post"); }
     else if (!post) { res.status(400).json("Sorry, could not find that id while creating the post"); }
     else {
       console.log("old post",post.text);
       console.log("new post",req.body.text);
-      if(post.text !== req.body.text && req.user._id.toString() === post.author._id.toString()){
+      if(req.user._id.toString() === post.author._id.toString()){
         post.text = req.body.text;
-        post.likes += parseInt(req.body.likes);
         post.save();
         res.status(200).json(post);
-      } else if (post.text !== req.body.text && req.user._id.toString() !== post.author._id.toString()){
-        res.status(401).json("Unauthorized");
       } else {
-        post.likes += parseInt(req.body.likes);
-        post.save();
-        res.status(200).json(post);
+        res.status(401).json("Unauthorized");
       }
     }
   });

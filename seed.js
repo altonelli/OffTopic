@@ -119,8 +119,8 @@ db.User.remove({},function(err,users){
             }
           });
         });
+        // process.exit();
         });
-        process.exit();
       }
     });
   });

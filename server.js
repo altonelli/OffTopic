@@ -132,6 +132,10 @@ app.get('/api/users/:user', controllers.users.show);
 
 app.put('/api/users/:user', controllers.users.update);
 
+app.put('/api/posts/:post/likes/:like', controllers.postLikes.update);
+
+app.put('/api/posts/:post/comments/:comment/likes/:like', controllers.commentLikes.update);
+
 
 
 /**********
