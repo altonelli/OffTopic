@@ -1,4 +1,5 @@
 var db = require('../models');
+var image;
 
 function index(req, res) {
   db.Post.find({}).populate('author likes comments.author comments.likes').exec(function(err,posts){
@@ -11,11 +12,12 @@ function index(req, res) {
 }
 
 function create(req, res) {
-  console.log(req.user);
+  // console.log('image',req.body.image);
   var newPost = new db.Post({
     author: req.user,
     date: new Date(),
     text: req.body.text,
+    image: req.body.image,
     likes: [],
     comments: []
   });
@@ -26,9 +28,11 @@ function create(req, res) {
       res.status(400).json("Sorry, could not find that id while creating the post");
     } else {
       post.populate('author').populate('likes').populate('comments');
+      // console.log(post);
       res.status(200).json(post);
     }
   });
+
   userPost.then(function(){
     req.user.posts.push(newPost);
     req.user.save();
@@ -64,18 +68,41 @@ function update(req, res) {
     if (err) { res.status(500).json("Sorry something went wrongon our end while creating that post"); }
     else if (!post) { res.status(400).json("Sorry, could not find that id while creating the post"); }
     else {
-      console.log("old post",post.text);
-      console.log("new post",req.body.text);
       if(req.user._id.toString() === post.author._id.toString()){
         post.text = req.body.text;
-        post.save();
-        res.status(200).json(post);
+        post.image = req.body.image;
+        var postSave = post.save(function(err,post){
+          if (err) { console.log("ERRRRR",err); }
+          else if (!post) { console.log("NO POST"); }
+          else{
+            console.log("SAVED",post);
+            res.status(200).json(post);
+          }
+        });
+        console.log(postSave);
+        postSave.then(function(){
+          console.log("I think this saved it?",post);
+          req.user.posts.forEach(function(userPost, index){
+            if (userPost._id.toString() === post._id.toString()){
+              req.user.posts.splice(index,1,post)
+            }
+          });
+          // req.user.posts.push(post);
+          req.user.save(function(err,user){
+            if (err) { console.log("ERRRRR",err); }
+            else if (!user) { console.log("NO USER"); }
+            else{
+              console.log("SAVED",user);
+            }
+          });
+        })
       } else {
         res.status(401).json("Unauthorized");
       }
     }
   });
 }
+
 
 
 

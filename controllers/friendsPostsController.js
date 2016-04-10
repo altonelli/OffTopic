@@ -14,7 +14,7 @@ function index(req, res) {
           friendsPosts.push(post);
         });
       });
-      console.log(friendsPosts);
+      // console.log(friendsPosts);
       friendsPosts.sort(function(a,b){
         if (a.date > b.date){
           return 1;
@@ -23,7 +23,7 @@ function index(req, res) {
         }
         return 0;
       });
-      console.log(friendsPosts);
+      // console.log(friendsPosts);
       res.status(200).json(friendsPosts);
     }
   });

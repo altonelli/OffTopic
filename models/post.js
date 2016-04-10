@@ -11,6 +11,7 @@ var PostSchema = new Schema({
   },
   date: Date,
   text: String,
+  image: String,
   likes: [{
     type: Schema.Types.ObjectId,
     ref: 'User'

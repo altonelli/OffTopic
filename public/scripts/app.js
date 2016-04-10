@@ -4,6 +4,7 @@ var commentTemplate;
 var foundUserTemplate;
 var $foundUserList;
 var likeTemplate;
+var inputImage;
 
 
 
@@ -40,14 +41,58 @@ $(document).ready(function() {
 
   $('#newPostForm').on('submit', function(e){
     e.preventDefault();
-    $.ajax({
-      method: 'POST',
-      url: '/api/posts',
-      data: $(this).serialize(),
-      success: newPostSuccess,
-      error: newPostError
-    });
-    $(this).val('');
+
+    var postStr = $('.post-input').val();
+    var gif = gifParser(postStr);
+    var img = imgParser(postStr);
+    var gifPromise;
+    if (gif) {
+      gifPromise = $.ajax({
+        method: 'GET',
+        url: 'http://api.giphy.com/v1/gifs/random',
+        data: {
+          api_key: 'dc6zaTOxFJmzC',
+          tag: gif,
+        },
+        success: gifSuccess,
+        error: gifError
+      });
+      gifPromise.then(function(){
+        $.ajax({
+          method: 'POST',
+          url: '/api/posts',
+          data: {
+            text: $('.post-input').val(),
+            image: inputImage,
+          },
+          success: newPostSuccess,
+          error: newPostError
+        });
+      });
+    } else if (img) {
+      inputImage = img;
+      $.ajax({
+        method: 'POST',
+        url: '/api/posts',
+        data: {
+          text: $('.post-input').val(),
+          image: inputImage,
+        },
+        success: newPostSuccess,
+        error: newPostError
+      });
+    } else {
+      $.ajax({
+        method: 'POST',
+        url: '/api/posts',
+        data: {
+          text: $('.post-input').val(),
+          image: inputImage,
+        },
+        success: newPostSuccess,
+        error: newPostError
+      });
+    }
   });
 
   $('#postTarget').on('click', '.like-post-button', function(e){
@@ -107,7 +152,7 @@ $(document).ready(function() {
   });
 
   $('#postTarget').on('click', '.edit-post-button', function(e){
-    console.log("edit",event);
+    // console.log("edit",event);
     e.preventDefault();
     var $post = $(this).closest('.post');
     var postId = $post.data('post-id');
@@ -118,19 +163,62 @@ $(document).ready(function() {
   });
 
   $('#postTarget').on('click', '.update-post-button', function(e){
-    console.log("updating",e);
-    e.preventDefault();
+    // console.log("updating",e);
     var $post = $(this).closest('.post');
     var postId = $post.data('post-id');
-    $.ajax({
-      method: 'PUT',
-      url: '/api/posts/' + postId,
-      data: {
-        text: $post.find('.edit-post-form').val(),
-      },
-      success: updatePostSuccess,
-      error: updatePostError
-    });
+
+
+    var postStr = $post.find('.edit-post-form').val();
+    var gif = gifParser(postStr);
+    var img = imgParser(postStr);
+    var gifPromise;
+    if (gif) {
+      gifPromise = $.ajax({
+        method: 'GET',
+        url: 'http://api.giphy.com/v1/gifs/random',
+        data: {
+          api_key: 'dc6zaTOxFJmzC',
+          tag: gif,
+        },
+        success: gifSuccess,
+        error: gifError
+      });
+      gifPromise.then(function(){
+        $.ajax({
+          method: 'PUT',
+          url: '/api/posts/' + postId,
+          data: {
+            text: $post.find('.edit-post-form').val(),
+            image: inputImage
+          },
+          success: updatePostSuccess,
+          error: updatePostError
+        });
+      });
+    } else if (img) {
+      inputImage = img;
+      $.ajax({
+        method: 'PUT',
+        url: '/api/posts/' + postId,
+        data: {
+          text: $post.find('.edit-post-form').val(),
+          image: inputImage
+        },
+        success: updatePostSuccess,
+        error: updatePostError
+      });
+    } else {
+      $.ajax({
+        method: 'PUT',
+        url: '/api/posts/' + postId,
+        data: {
+          text: $post.find('.edit-post-form').val(),
+          image: inputImage
+        },
+        success: updatePostSuccess,
+        error: updatePostError
+      });
+    }
   });
 
   $('#postTarget').on('submit', '.comment-form', function(e){
@@ -142,7 +230,7 @@ $(document).ready(function() {
       data: {
         author: user,
         text: $(this).find('.comment-input').val(),
-        likes: 0
+        likes: []
       },
       success: createCommentSuccess,
       error: createCommentError
@@ -180,6 +268,7 @@ $(document).ready(function() {
       error: updateCommentError
     });
   });
+
 
   $('#postTarget').on('click', '.update-comment-button', function(e){
     e.preventDefault();
@@ -246,11 +335,11 @@ $(document).ready(function() {
     console.log("user",user._id);
     console.log("requested",$(this).closest('.row').data('user-id'));
     $.ajax({
-    method: 'POST',
-    url: '/api/users/' + user._id + '/friends/' + $(this).closest('.row').data('user-id'),
-    data: null,
-    success: addFriendSuccess,
-    error: addFriendError
+      method: 'POST',
+      url: '/api/users/' + user._id + '/friends/' + $(this).closest('.row').data('user-id'),
+      data: null,
+      success: addFriendSuccess,
+      error: addFriendError
     });
   });
 
@@ -260,16 +349,17 @@ $(document).ready(function() {
     console.log("user",user._id);
     console.log("requested",$(this).closest('.row').data('user-id'));
     $.ajax({
-    method: 'DELETE',
-    url: '/api/users/' + user._id + '/friends/' + $(this).closest('.row').data('user-id'),
-    data: null,
-    success: removeFriendSuccess,
-    error: removeFriendError
+      method: 'DELETE',
+      url: '/api/users/' + user._id + '/friends/' + $(this).closest('.row').data('user-id'),
+      data: null,
+      success: removeFriendSuccess,
+      error: removeFriendError
     });
   });
 
 
 });
+
 
 function removeFriendSuccess(friend){
   console.log(friend);
@@ -372,6 +462,7 @@ function createCommentError(err){
 function updatePostSuccess(post){
   // console.log('post',post);
   renderSinglePost(post);
+  inputImage = null;
   var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
   var liked;
   post.likes.forEach(function(like){
@@ -428,12 +519,50 @@ function getAllPostError(err){
 }
 
 function newPostSuccess(post){
-  console.log(post.author);
+  // console.log(post.author);
   renderPost(post);
+  $('.post-input').val('');
+  inputImage = null;
 }
 
 function newPostError(err){
   console.log(err);
+}
+
+function gifSuccess(json){
+  // console.log(json);
+  inputImage = json.data.fixed_height_small_url;
+  // console.log("IMAGE",inputImage);
+}
+
+function gifError(err){
+  console.log(err);
+}
+
+function gifParser(str){
+  var word;
+  var arr = str.split(' ');
+  arr.forEach(function(el){
+    if (el[0] === "/"){
+      word = el.slice(1,el.length);
+    }
+  });
+  console.log("WORD",word);
+  return word;
+}
+
+function imgParser(str){
+	var formats = [".jpg", ".jpeg", ".tif", ".png", ".gif"];
+	var word;
+	var arr = str.split(' ');
+	arr.forEach(function(el){
+			formats.forEach(function(format){
+				if (el.includes(format)){
+				word = el;
+				}
+			});
+		});
+	return word;
 }
 
 function initPopOver(postId){
@@ -447,8 +576,8 @@ function initPopOver(postId){
 
 function renderSingleCommentInPlace(comment){
   var commentHtml = commentTemplate(comment);
-  console.log("before",$('#postTarget').find('[data-comment-id="' + comment._id + '"]').clone(true).html());
-  console.log("replace by",commentHtml);
+  // console.log("before",$('#postTarget').find('[data-comment-id="' + comment._id + '"]').clone(true).html());
+  // console.log("replace by",commentHtml);
   $('#postTarget').find('[data-comment-id="' + comment._id + '"]').html(commentHtml);
 }
 
@@ -461,6 +590,7 @@ function renderSinglePost(post){
 }
 
 function renderPost(post){
+  // console.log(post);
   var postHtml = postTemplate(post);
   $postList.prepend(postHtml);
   // initPopOver(post._id);
