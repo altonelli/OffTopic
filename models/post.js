@@ -8,7 +8,7 @@ var PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  date: String,
+  date: Date,
   text: String,
   likes: [{
     type: Schema.Types.ObjectId,

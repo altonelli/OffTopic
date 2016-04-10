@@ -8,7 +8,7 @@ var CommentSchema = new Schema({
     ref: 'User'
   },
   text: String,
-  date: String,
+  date: Date,
   likes: [{
     type: Schema.Types.ObjectId,
     ref: 'User'

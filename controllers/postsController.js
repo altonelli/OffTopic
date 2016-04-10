@@ -19,7 +19,7 @@ function create(req, res) {
     likes: [],
     comments: []
   });
-  newPost.save(function(err,post){
+  var userPost = newPost.save(function(err,post){
     if (err) {
       res.status(500).json("Sorry something went wrong on our end while creating that post");
     } else if (!post) {
@@ -29,7 +29,10 @@ function create(req, res) {
       res.status(200).json(post);
     }
   });
-
+  userPost.then(function(){
+    req.user.posts.push(newPost);
+    req.user.save();
+  });
 }
 
 function show(req, res) {

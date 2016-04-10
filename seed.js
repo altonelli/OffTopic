@@ -38,28 +38,28 @@ var userList = [
 var postList = [
   {
     author: {},
-    date: "1/1/2016",
+    date: new Date('January 1, 2016 03:24:00'),
     text: "What is going on tonight?",
     likes: [],
     comments: []
   },
   {
     author: {},
-    date: "1/1/2016",
+    date: new Date('January 2, 2016 03:24:00'),
     text: "Just got a new gym badge!",
     likes: [],
     comments: []
   },
   {
     author: {},
-    date: "1/1/2016",
+    date: new Date('January 3, 2016 03:24:00'),
     text: "Gotta catch'em all!",
     likes: [],
     comments: []
   },
   {
     author: {},
-    date: "1/1/2016",
+    date: new Date('January 4, 2016 03:24:00'),
     text: "Pokemon!",
     likes: [],
     comments: []
@@ -69,25 +69,25 @@ var postList = [
 var commentList = [
   {
     author: {},
-    date: "12/31/2016",
+    date: new Date('January 1, 2016 03:24:00'),
     text: "This is a waste of time",
     likes: [],
   },
   {
     author: {},
-    date: "12/31/2016",
+    date: new Date('January 2, 2016 03:24:00'),
     text: "Cool!",
     likes: [],
   },
   {
     author: {},
-    date: "12/31/2016",
+    date: new Date('January 3, 2016 03:24:00'),
     text: "Have fun!",
     likes: [],
   },
   {
     author: {},
-    date: "12/31/2016",
+    date: new Date('January 4, 2016 03:24:00'),
     text: "Going to the gym!",
     likes: [],
   },
@@ -105,11 +105,12 @@ db.User.remove({},function(err,users){
             comment.author = user;
             comment.likes = users;
           });
-        users.forEach(function(user){
           postList.forEach(function(post){
             post.author = user;
             post.likes = users;
             post.comments = commentList;
+          // users.forEach(function(user){
+          //   });
           });
           db.Post.create(postList, function(err,posts){
             if(err){return console.log('ERROR',err);}
@@ -118,8 +119,7 @@ db.User.remove({},function(err,users){
               console.log(posts);
             }
           });
-        });
-        // process.exit();
+          // process.exit();
         });
       }
     });
