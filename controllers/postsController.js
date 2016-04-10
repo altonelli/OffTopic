@@ -12,7 +12,6 @@ function index(req, res) {
 }
 
 function create(req, res) {
-  // console.log('image',req.body.image);
   var newPost = new db.Post({
     author: req.user,
     date: new Date(),
@@ -54,6 +53,12 @@ function destroy(req, res) {
     else {
       var postId = post._id;
       if(req.user._id.toString() === post.author._id.toString()){
+        post.author.posts.forEach(function(foundPost, index){
+          if(foundPost._id.toString() === post._id.toString()){
+            var removedPost = post.author.posts.splice(index,1);
+          }
+        });
+        post.author.save();
         post.remove();
         res.status(200).json(postId);
       } else {
@@ -75,27 +80,17 @@ function update(req, res) {
           if (err) { console.log("ERRRRR",err); }
           else if (!post) { console.log("NO POST"); }
           else{
-            console.log("SAVED",post);
             res.status(200).json(post);
           }
         });
-        console.log(postSave);
         postSave.then(function(){
-          console.log("I think this saved it?",post);
           req.user.posts.forEach(function(userPost, index){
             if (userPost._id.toString() === post._id.toString()){
-              req.user.posts.splice(index,1,post)
+              req.user.posts.splice(index,1,post);
             }
           });
-          // req.user.posts.push(post);
-          req.user.save(function(err,user){
-            if (err) { console.log("ERRRRR",err); }
-            else if (!user) { console.log("NO USER"); }
-            else{
-              console.log("SAVED",user);
-            }
-          });
-        })
+          req.user.save();
+        });
       } else {
         res.status(401).json("Unauthorized");
       }

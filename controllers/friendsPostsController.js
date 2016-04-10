@@ -2,8 +2,8 @@ var db = require('../models');
 
 function index(req, res) {
   db.User.findOne({_id: req.params.friend})
-  .populate('posts posts.author posts.likes')
-  .deepPopulate('friends friends.posts friends.posts.author friends.posts.likes friends.posts.comments.likes friends.posts.comments.author')
+  .populate('posts posts.author posts.likes posts.comments posts.comments.author')
+  .deepPopulate('friends friends.posts friends.posts.author friends.posts.likes friends.posts.comments friends.posts.comments.likes friends.posts.comments.author')
   .exec(function(err,user){
     var friendsPosts = user.posts;
     if (err) {res.status(500).json("Sorry, error occurred while looking for your profile");}

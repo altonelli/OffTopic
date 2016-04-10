@@ -224,22 +224,69 @@ $(document).ready(function() {
   $('#postTarget').on('submit', '.comment-form', function(e){
     e.preventDefault();
     var postId = $(this).closest('.post').data('post-id');
-    var newComment =$.ajax({
-      method: 'POST',
-      url: '/api/posts/' + postId + '/comments',
-      data: {
-        author: user,
-        text: $(this).find('.comment-input').val(),
-        likes: []
-      },
-      success: createCommentSuccess,
-      error: createCommentError
-    });
-    $('.comment-input').val('');
-    console.log(postId);
-    $.when(newComment).done(function(){
-      $.get('/api/posts/' + postId).success(renderSinglePost);
-    });
+    var postStr = $(this).find('.comment-input').val();
+    var gif = gifParser(postStr);
+    var img = imgParser(postStr);
+    var gifPromise;
+    if (gif) {
+      gifPromise = $.ajax({
+        method: 'GET',
+        url: 'http://api.giphy.com/v1/gifs/random',
+        data: {
+          api_key: 'dc6zaTOxFJmzC',
+          tag: gif,
+        },
+        success: gifSuccess,
+        error: gifError
+      });
+      gifPromise.then(function(){
+        var newComment = $.ajax({
+          method: 'POST',
+          url: '/api/posts/' + postId + '/comments',
+          data: {
+            author: user,
+            text: $(this).find('.comment-input').val(),
+            image: inputImage
+          },
+          success: createCommentSuccess,
+          error: createCommentError
+        });
+        $.when(newComment).done(function(){
+          $.get('/api/posts/' + postId).success(renderSinglePost);
+        });
+      });
+    } else if (img) {
+      inputImage = img;
+      var newComment = $.ajax({
+        method: 'POST',
+        url: '/api/posts/' + postId + '/comments',
+        data: {
+          author: user,
+          text: $(this).find('.comment-input').val(),
+          image: inputImage
+        },
+        success: createCommentSuccess,
+        error: createCommentError
+      });
+      $.when(newComment).done(function(){
+        $.get('/api/posts/' + postId).success(renderSinglePost);
+      });
+    } else {
+      var newComment = $.ajax({
+        method: 'POST',
+        url: '/api/posts/' + postId + '/comments',
+        data: {
+          author: user,
+          text: $(this).find('.comment-input').val(),
+          image: inputImage
+        },
+        success: createCommentSuccess,
+        error: createCommentError
+      });
+      $.when(newComment).done(function(){
+        $.get('/api/posts/' + postId).success(renderSinglePost);
+      });
+    }
   });
 
   $('#postTarget').on('click', '.edit-comment-button', function(e){
@@ -452,7 +499,8 @@ function updateCommentError(err){
 
 function createCommentSuccess(comment){
   console.log(comment);
-
+  inputImage = null;
+  $('.comment-input').val('');
 }
 
 function createCommentError(err){

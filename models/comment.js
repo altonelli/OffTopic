@@ -10,6 +10,7 @@ var CommentSchema = new Schema({
   },
   text: String,
   date: Date,
+  image: String,
   likes: [{
     type: Schema.Types.ObjectId,
     ref: 'User'
