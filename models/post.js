@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var Comment = require("./comment.js");
 
@@ -16,6 +17,8 @@ var PostSchema = new Schema({
   }],
   comments: [Comment.schema]
 });
+
+PostSchema.plugin(deepPopulate);
 
 var Post = mongoose.model('Post', PostSchema);
 module.exports = Post;

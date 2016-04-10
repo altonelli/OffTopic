@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 
 var CommentSchema = new Schema({
@@ -14,6 +15,8 @@ var CommentSchema = new Schema({
     ref: 'User'
   }]
 });
+
+CommentSchema.plugin(deepPopulate);
 
 var Comment = mongoose.model('Comment', CommentSchema);
 

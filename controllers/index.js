@@ -4,3 +4,4 @@ module.exports.users = require('./usersController');
 module.exports.postLikes = require('./postLikesController');
 module.exports.commentLikes = require('./commentLikesController');
 module.exports.friends = require('./friendsController');
+module.exports.friendsPosts = require('./friendsPostsController');

@@ -23,13 +23,19 @@ $(document).ready(function() {
   // likeTemplate = Handlebars.compile(likeSource);
   console.log(user);
 
-
   $.ajax({
     method: 'GET',
-    url: '/api/posts',
+    url: '/api/friends/' + user._id + '/posts',
     success: getAllPostSuccess,
     error: getAllPostError
   });
+
+  // $.ajax({
+  //   method: 'GET',
+  //   url: '/api/posts',
+  //   success: getAllPostSuccess,
+  //   error: getAllPostError
+  // });
 
 
   $('#newPostForm').on('submit', function(e){

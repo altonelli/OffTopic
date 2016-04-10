@@ -14,6 +14,9 @@ var mongoose = require('mongoose'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy;
 
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
+
+
 var controllers = require('./controllers');
 var db = require('./models'),
   User = db.User;
@@ -137,6 +140,8 @@ app.delete('/api/users/:user/friends/:friend', controllers.friends.destroy);
 app.put('/api/posts/:post/likes/:like', controllers.postLikes.update);
 
 app.put('/api/posts/:post/comments/:comment/likes/:like', controllers.commentLikes.update);
+
+app.get('/api/friends/:friend/posts', controllers.friendsPosts.index);
 
 
 
