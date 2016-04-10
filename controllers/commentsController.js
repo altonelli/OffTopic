@@ -73,7 +73,7 @@ function destroy(req, res) {
 }
 
 function update(req, res) {
-  db.Post.findOne({_id: req.params.post}).populate('comments').populate('likes').populate('comments.author').exec(function(err,post){
+  db.Post.findOne({_id: req.params.post}).populate('author comments likes comments.author').exec(function(err,post){
     if(err){ res.status(500).json('Sorry, something went wrong on our end while looking for that post');}
     else if (!post) { res.status(400).json('Sorry, we could not find that post'); }
     else {
@@ -81,9 +81,16 @@ function update(req, res) {
         if (comment._id.toString() === req.params.comment){
           if(req.user._id.toString() === comment.author._id.toString()){
             comment.text = req.body.text;
+            comment.image = req.body.image;
             comment.save();
             console.log(comment);
             post.save();
+            post.author.posts.forEach(function(foundPost, index){
+              if(foundPost._id.toString() === post._id.toString()){
+                post.author.posts.splice(index,1,post);
+              }
+            });
+            post.author.save();
             res.status(200).json(comment);
           } else {
             res.status(401).json("Unauthorized");

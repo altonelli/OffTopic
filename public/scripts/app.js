@@ -229,6 +229,7 @@ $(document).ready(function() {
     var img = imgParser(postStr);
     var gifPromise;
     if (gif) {
+      console.log("in gif");
       gifPromise = $.ajax({
         method: 'GET',
         url: 'http://api.giphy.com/v1/gifs/random',
@@ -240,12 +241,13 @@ $(document).ready(function() {
         error: gifError
       });
       gifPromise.then(function(){
+        console.log("text in input",$(this).find('.comment-input').val());
         var newComment = $.ajax({
           method: 'POST',
           url: '/api/posts/' + postId + '/comments',
           data: {
             author: user,
-            text: $(this).find('.comment-input').val(),
+            text: postStr,
             image: inputImage
           },
           success: createCommentSuccess,
@@ -256,13 +258,14 @@ $(document).ready(function() {
         });
       });
     } else if (img) {
+      console.log("in img");
       inputImage = img;
       var newComment = $.ajax({
         method: 'POST',
         url: '/api/posts/' + postId + '/comments',
         data: {
           author: user,
-          text: $(this).find('.comment-input').val(),
+          text: postStr,
           image: inputImage
         },
         success: createCommentSuccess,
@@ -272,12 +275,13 @@ $(document).ready(function() {
         $.get('/api/posts/' + postId).success(renderSinglePost);
       });
     } else {
+      console.log("in reg");
       var newComment = $.ajax({
         method: 'POST',
         url: '/api/posts/' + postId + '/comments',
         data: {
           author: user,
-          text: $(this).find('.comment-input').val(),
+          text: postStr,
           image: inputImage
         },
         success: createCommentSuccess,
@@ -304,16 +308,61 @@ $(document).ready(function() {
     var postId = $post.data('post-id');
     var $comment = $(this).closest('.comment');
     var commentId = $comment.data('comment-id');
-    $comment.find('.comment-edit-input').val();
-    $.ajax({
-      method: 'PUT',
-      url: '/api/posts/' + postId + '/comments/' + commentId,
-      data: {
-        text: $comment.find('.comment-edit-input').val(),
-      },
-      success: updateCommentSuccess,
-      error: updateCommentError
-    });
+
+    var postStr = $comment.find('.comment-edit-input').val();
+    var gif = gifParser(postStr);
+    var img = imgParser(postStr);
+    var gifPromise;
+    if (gif) {
+      console.log("in gif");
+      gifPromise = $.ajax({
+        method: 'GET',
+        url: 'http://api.giphy.com/v1/gifs/random',
+        data: {
+          api_key: 'dc6zaTOxFJmzC',
+          tag: gif,
+        },
+        success: gifSuccess,
+        error: gifError
+      });
+      gifPromise.then(function(){
+        $.ajax({
+          method: 'PUT',
+          url: '/api/posts/' + postId + '/comments/' + commentId,
+          data: {
+            text: postStr,
+            image: inputImage
+          },
+          success: updateCommentSuccess,
+          error: updateCommentError
+        });
+      });
+    } else if (img) {
+      console.log("in img");
+      inputImage = img;
+      $.ajax({
+        method: 'PUT',
+        url: '/api/posts/' + postId + '/comments/' + commentId,
+        data: {
+          text: postStr,
+          image: inputImage
+        },
+        success: updateCommentSuccess,
+        error: updateCommentError
+      });
+    } else {
+      console.log("in reg");
+      $.ajax({
+        method: 'PUT',
+        url: '/api/posts/' + postId + '/comments/' + commentId,
+        data: {
+          text: postStr,
+          image: inputImage
+        },
+        success: updateCommentSuccess,
+        error: updateCommentError
+      });
+    }
   });
 
 
@@ -323,16 +372,61 @@ $(document).ready(function() {
     var postId = $post.data('post-id');
     var $comment = $(this).closest('.comment');
     var commentId = $comment.data('comment-id');
-    $comment.find('.comment-edit-input').val();
-    $.ajax({
-      method: 'PUT',
-      url: '/api/posts/' + postId + '/comments/' + commentId,
-      data: {
-        text: $comment.find('.comment-edit-input').val(),
-      },
-      success: updateCommentSuccess,
-      error: updateCommentError
-    });
+
+    var postStr = $comment.find('.comment-edit-input').val();
+    var gif = gifParser(postStr);
+    var img = imgParser(postStr);
+    var gifPromise;
+    if (gif) {
+      console.log("in gif");
+      gifPromise = $.ajax({
+        method: 'GET',
+        url: 'http://api.giphy.com/v1/gifs/random',
+        data: {
+          api_key: 'dc6zaTOxFJmzC',
+          tag: gif,
+        },
+        success: gifSuccess,
+        error: gifError
+      });
+      gifPromise.then(function(){
+        $.ajax({
+          method: 'PUT',
+          url: '/api/posts/' + postId + '/comments/' + commentId,
+          data: {
+            text: postStr,
+            image: inputImage
+          },
+          success: updateCommentSuccess,
+          error: updateCommentError
+        });
+      });
+    } else if (img) {
+      console.log("in img");
+      inputImage = img;
+      $.ajax({
+        method: 'PUT',
+        url: '/api/posts/' + postId + '/comments/' + commentId,
+        data: {
+          text: postStr,
+          image: inputImage
+        },
+        success: updateCommentSuccess,
+        error: updateCommentError
+      });
+    } else {
+      console.log("in reg");
+      $.ajax({
+        method: 'PUT',
+        url: '/api/posts/' + postId + '/comments/' + commentId,
+        data: {
+          text: postStr,
+          image: inputImage
+        },
+        success: updateCommentSuccess,
+        error: updateCommentError
+      });
+    }
   });
 
   $('#postTarget').on('click', '.like-comment-button', function(e){
@@ -477,6 +571,7 @@ function likeCommentError(err){
 }
 
 function updateCommentSuccess(comment){
+  console.log(comment);
   renderSingleCommentInPlace(comment);
   var $likeButton = $('#postTarget').find('[data-comment-id="' + comment._id + '"]').find('.like-comment-button');
   var liked;
@@ -600,17 +695,17 @@ function gifParser(str){
 }
 
 function imgParser(str){
-	var formats = [".jpg", ".jpeg", ".tif", ".png", ".gif"];
-	var word;
-	var arr = str.split(' ');
-	arr.forEach(function(el){
-			formats.forEach(function(format){
-				if (el.includes(format)){
-				word = el;
-				}
-			});
-		});
-	return word;
+  var formats = [".jpg", ".jpeg", ".tif", ".png", ".gif"];
+  var word;
+  var arr = str.split(' ');
+  arr.forEach(function(el){
+    formats.forEach(function(format){
+      if (el.includes(format)){
+        word = el;
+      }
+    });
+  });
+  return word;
 }
 
 function initPopOver(postId){
