@@ -5,6 +5,8 @@ var foundUserTemplate;
 var $foundUserList;
 var likeTemplate;
 var inputImage;
+var $friendList;
+var friendTemplate;
 
 
 
@@ -20,9 +22,18 @@ $(document).ready(function() {
   commentTemplate = Handlebars.compile(commentSource);
   var foundUserSource = $('#found-user-template').html();
   foundUserTemplate = Handlebars.compile(foundUserSource);
-  // var likeSource = $('#like-display-template').html();
-  // likeTemplate = Handlebars.compile(likeSource);
+  $friendList = $('#friend-list-target');
+  var friendSource = $('#friend-template').html();
+  friendTemplate = Handlebars.compile(friendSource);
+
   console.log(user);
+
+  $.ajax({
+    method:'GET',
+    url: '/api/friends',
+    success: getFriendsSuccess,
+    error: getFriendsError
+  });
 
   $.ajax({
     method: 'GET',
@@ -467,7 +478,6 @@ $(document).ready(function() {
       success: searchUserSuccess,
       error: searchUserError
     });
-    $('.user-search-input').val('');
   });
 
   $('.found-user-modal-body').on('click', '.add-friend-button', function(e){
@@ -498,9 +508,35 @@ $(document).ready(function() {
     });
   });
 
+  $('.found-user-modal').on('click', '.modal-close', function(e){
+    window.location.reload();
+  });
+
+  $('.found-user-modal-body').on('click', '.view-user-button', function(e){
+    e.preventDefault();
+    $.ajax({
+      method: 'GET',
+      url: '/api/users/' + $(this).closest('.row').data('user-id') + '/posts',
+      success: getAllPostSuccess,
+      error: getAllPostError
+    });
+    $('.found-user-modal').modal('hide');
+  });
 
 });
 
+function getFriendsSuccess(friends){
+  console.log(friends);
+  $friendList.empty();
+  friends.forEach(function(friend){
+    var friendHtml = friendTemplate(friend);
+    $friendList.append(friendHtml);
+  });
+}
+
+function getFriendsError(err){
+  console.log(err);
+}
 
 function removeFriendSuccess(friend){
   console.log(friend);
@@ -535,6 +571,7 @@ function searchUserSuccess(foundUsers){
     });
   });
   $('.found-user-modal').modal('show');
+  $('.user-search-input').val('');
 }
 
 function searchUserError(err){
@@ -564,6 +601,7 @@ function likeCommentSuccess(comment){
   } else {
     $likeButton.text("+");
   }
+  renderButtons();
 }
 
 function likeCommentError(err){
@@ -585,6 +623,7 @@ function updateCommentSuccess(comment){
   } else {
     $likeButton.text("+");
   }
+  renderButtons();
 }
 
 function updateCommentError(err){
@@ -618,6 +657,7 @@ function updatePostSuccess(post){
   } else {
     $likeButton.text("+");
   }
+  renderButtons();
 }
 
 function updatePostError(err){
@@ -647,6 +687,7 @@ function likePostSuccess(post){
   } else {
     $likeButton.text("+");
   }
+  renderButtons();
 }
 
 function likePostError(err){
@@ -654,7 +695,11 @@ function likePostError(err){
 }
 
 function getAllPostSuccess(posts){
+  $('#postTarget').find('.post').each(function(idx,el){
+    el.remove();
+  });
   posts.forEach(renderPost);
+  renderButtons();
 }
 
 function getAllPostError(err){
@@ -666,6 +711,7 @@ function newPostSuccess(post){
   renderPost(post);
   $('.post-input').val('');
   inputImage = null;
+  renderButtons();
 }
 
 function newPostError(err){
@@ -737,4 +783,17 @@ function renderPost(post){
   var postHtml = postTemplate(post);
   $postList.prepend(postHtml);
   // initPopOver(post._id);
+}
+
+function renderButtons(){
+  $('.post').each(function(idx,post){
+    if(user._id !== $(post).data('author-id')){
+      $(post).find('.edit-post-group').css('visibility', 'hidden');
+    }
+  });
+  $('.comment').each(function(idx,comment){
+    if(user._id !== $(comment).data('author-id')){
+      $(comment).find('.edit-comment-group').css('visibility', 'hidden');
+    }
+  });
 }

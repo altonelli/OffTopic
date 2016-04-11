@@ -58,7 +58,11 @@ app.set('view engine', 'hbs');
  **********/
 
  app.get('/', function (req, res) {
-   res.render('index', {user: JSON.stringify(req.user) + "|| null" });
+   if(req.user){
+     res.render('index', {user: JSON.stringify(req.user) + "|| null" });
+   } else {
+     res.render('login');
+   }
  });
 
 
@@ -143,6 +147,9 @@ app.put('/api/posts/:post/comments/:comment/likes/:like', controllers.commentLik
 
 app.get('/api/friends/:friend/posts', controllers.friendsPosts.index);
 
+app.get('/api/friends', controllers.friends.index);
+
+app.get('/api/users/:user/posts', controllers.usersPosts.index);
 
 
 /**********

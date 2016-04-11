@@ -34,7 +34,32 @@ function create(req, res) {
 }
 
 function show(req, res) {
-
+  // db.User.findOne({_id: req.params.friend})
+  // .populate('posts posts.author posts.likes posts.comments posts.comments.author')
+  // .deepPopulate('friends friends.posts friends.posts.author friends.posts.likes friends.posts.comments friends.posts.comments.likes friends.posts.comments.author')
+  // .exec(function(err,user){
+  //   var friendPosts;
+  //   if (err) {res.status(500).json("Sorry, error occurred while looking for your profile");}
+  //   else if(!user) {res.status(400).json("Sorry, we could nto find your profile. You must not exist."); }
+  //   else {
+  //     user.friends.forEach(function(friend){
+  //       if (friend._id.toString() === req.params.post.toString()){
+  //         console.log("NAME",friend.username,"OBJECT",friend);
+  //         friendPosts = friend.posts;
+  //       }
+  //     });
+  //     friendPosts.sort(function(a,b){
+  //       if (a.date > b.date){
+  //         return 1;
+  //       } else if (a.date < b.date) {
+  //         return -1;
+  //       }
+  //       return 0;
+  //     });
+  //       // console.log(friendsPosts);
+  //     res.status(200).json(friendPosts);
+  //     }
+  // });
 }
 
 function destroy(req, res) {

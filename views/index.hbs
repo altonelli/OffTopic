@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Off Topic</title>
+  <title>Off/Topic</title>
 
   <!-- STYLESHEETS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -37,7 +37,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Off Topic</a>
+        <a class="navbar-brand" href="/">Off/Topic</a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
@@ -45,8 +45,8 @@
         <form class="navbar-form navbar-left user-search" role="search">
           <div class="form-group">
             <input type="text" class="form-control user-search-input" placeholder="Search for Friends">
+            <button type="submit" class="btn btn-default">Submit</button>
           </div>
-          <button type="submit" class="btn btn-default">Submit</button>
         </form>
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -55,7 +55,16 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-md-8 col-md-offset-2">
+      <div class="col-md-2">
+        <div id="friend-list-target">
+          <script id="friend-template" type="text/x-handlebars-template">
+            <div class="row">
+              <img class="col-xs-4 responsive" src="\{{image}}"/><p class="col-xs-8">\{{username}}</p>
+            </div>
+          </script>
+        </div>
+    </div>
+      <div class="col-md-8">
         <h1>Posts</h1>
         <div class="row">
           <form class="form-inline" id="newPostForm">
@@ -73,11 +82,11 @@
 
           <script id="posts-template" type="text/x-handlebars-template">
 
-            <div class="post" data-post-id=\{{_id}}>
+            <div class="post" data-post-id=\{{_id}} data-author-id="\{{author._id}}">
               <div class="only-post">
                 <div class="row">
 
-                  <div class="btn-group pull-right">
+                  <div class="btn-group edit-post-group pull-right">
                     <button type="button" class="btn btn-warning edit-post-button">Edit</button>
                     <button type="button" class="btn btn-info update-post-button hidden" style="border-radius: 4px 0px 0px 4px">Save</button>
                     <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -124,7 +133,7 @@
               </div>
               <div class="only-comment">
                 \{{#each comments}}
-                <div class="row comment" data-comment-id="\{{_id}}">
+                <div class="row comment" data-comment-id="\{{_id}}" data-author-id="\{{author._id}}">
                   <div class="input-group comment-bar" role="group" aria-label="">
                     <span class="input-group-btn">
                       <button type="button" class="btn btn-primary like-comment-button" name="likes" value="1">+</button>
@@ -149,7 +158,7 @@
                         </div>
                       </form>
                     </div>
-                    <span class="input-group-btn comment-dropdown">
+                    <span class="input-group-btn edit-comment-group comment-dropdown">
                       <div class="btn-group pull-right">
                         <button type="button" class="btn btn-warning edit-comment-button">Edit</button>
                         <button type="button" class="btn btn-info update-comment-button hidden" style="border-radius: 0px">Save</button>
@@ -169,7 +178,7 @@
 
 
           <script id="comment-template" type="text/x-handlebars-template">
-            <div class="row comment" data-comment-id="\{{_id}}">
+            <div class="row comment" data-comment-id="\{{_id}}" data-author-id="\{{author._id}}">
               <div class="input-group comment-bar" role="group" aria-label="">
                 <span class="input-group-btn">
                   <button type="button" class="btn btn-primary like-comment-button" name="likes" value="1">+</button>
@@ -189,7 +198,7 @@
                     </div>
                   </form>
                 </div>
-                <span class="input-group-btn comment-dropdown">
+                <span class="input-group-btn edit-comment-group comment-dropdown">
                   <div class="btn-group pull-right">
                     <button type="button" class="btn btn-warning edit-comment-button">Edit</button>
                     <button type="button" class="btn btn-info update-comment-button hidden" style="border-radius: 0px">Save</button>
@@ -208,21 +217,22 @@
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <button type="button" class="close modal-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   <h4 class="modal-title">Here is what we found:</h4>
                 </div>
                 <div class="found-user-modal-body">
                   <script id="found-user-template" type="text/x-handlebars-template">
                     <div class="row" data-user-id=\{{_id}}>
                       <img  class="profile-image responsive col-xs-2" src=\{{image}}>
-                      <p class="col-xs-7">\{{username}}</p>
+                      <p class="col-xs-4">\{{username}}</p>
+                      <button class="btn btn-success view-user-button col-xs-3">View Posts</button>
                       <button class="btn btn-primary add-friend-button col-xs-3">Add as Friend</button>
                       <button class="btn btn-danger delete-friend-button hidden col-xs-3">Delete as Friend</button>
                     </div>
                   </script>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
