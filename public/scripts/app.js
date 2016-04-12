@@ -675,18 +675,18 @@ function deletePostError(err){
 function likePostSuccess(post){
   // console.log('post',post);
   renderSinglePost(post);
-  var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
-  var liked;
-  post.likes.forEach(function(like){
-    if (like._id.toString() === user._id.toString()) {
-      liked = true;
-    }
-  });
-  if(liked){
-    $likeButton.text("-");
-  } else {
-    $likeButton.text("+");
-  }
+  // var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
+  // var liked;
+  // post.likes.forEach(function(like){
+  //   if (like._id.toString() === user._id.toString()) {
+  //     liked = true;
+  //   }
+  // });
+  // if(liked){
+  //   $likeButton.text("-");
+  // } else {
+  //   $likeButton.text("+");
+  // }
   renderButtons();
 }
 
@@ -791,10 +791,16 @@ function renderButtons(){
   });
   $('.comment').each(function(idx,comment){
     if(user._id !== $(comment).data('author-id')){
-      // $(comment).find('.edit-comment-group').toggleClass('hidden');
       $(comment).find('.edit-comment-group').css('visibility', 'hidden');
       $(comment).css('border-right','0px');
-      // $(comment).find('.off-topic-button').toggleClass('hidden');
     }
+  });
+  $('.like-popover').each(function(idx,likePopover){
+    $(likePopover).find('p').each(function(idx,like){
+      if(user._id === $(like).data('user-id')){
+        console.log($(like).closest('.input-group-btn').find('name'));
+        $(like).closest('.input-group-btn').find('name').css('background-color', 'rgb(121, 208, 235)');
+      }
+    });
   });
 }

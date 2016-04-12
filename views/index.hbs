@@ -152,7 +152,7 @@
                       <button type="button" class="btn btn-info like-comment-display" data-toggle="popover" data-trigger="focus" data-placement="bottom">\{{likes.length}}</button>
                       <div class="hidden like-popover">
                         \{{#each likes}}
-                        <p>\{{username}}</p>
+                        <p data-user-id="\{{_id}}">\{{username}}</p>
                         \{{/each}}
                       </div>
                     </span>
@@ -198,7 +198,7 @@
                   <button type="button" class="btn btn-info like-comment-display" data-toggle="popover" data-trigger="focus" data-placement="bottom">\{{likes.length}}</button>
                   <div class="hidden like-popover">
                     \{{#each likes}}
-                    <p>\{{username}}</p>
+                    <p data-user-id="\{{_id}}">\{{username}}</p>
                     \{{/each}}
                   </div>
                 </span>

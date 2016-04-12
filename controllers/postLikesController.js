@@ -18,26 +18,28 @@ function destroy(req, res) {
 
 function update(req, res) {
   db.Post.findOne({_id: req.params.post})
-  .populate('comments comments.author likes comments.likes author')
+  .deepPopulate('comments.author author author.posts author.posts.author author.posts.likes likes comments.likes author')
   .exec(function(err, post){
-    db.User.findOne({_id: req.params.like}, function(err, user){
-      var indexOfLike;
-      console.log(post);
-      post.likes.forEach(function(like, index){
-        if(like._id.toString() === user._id.toString()){
-          console.log('like',like);
-          console.log('user',user);
-          indexOfLike = index;
+    db.User.findOne({_id: post.author._id})
+    .populate('posts posts.likes')
+    .exec(function(err,user){
+      user.posts.forEach(function(foundPost){
+        if (foundPost._id.toString() === post._id.toString()){
+          if(foundPost.likes.length === 0){
+            foundPost.likes.push(req.user);
+          } else {
+            foundPost.likes.forEach(function(like,index){
+              if(like._id.toString() === req.user._id.toString()){
+                foundPost.likes.splice(index,1);
+              } else if (index === foundPost.likes.length-1) {
+                foundPost.likes.push(req.user);
+              }
+            });
+          }
+          user.save();
+          res.status(200).json(foundPost);
         }
       });
-      console.log("index",indexOfLike);
-      if(indexOfLike >= 0){
-        post.likes.splice(indexOfLike,1);
-      } else {
-        post.likes.push(user);
-      }
-      post.save();
-      res.status(200).json(post);
     });
   });
 }
