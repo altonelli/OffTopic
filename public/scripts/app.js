@@ -523,6 +523,16 @@ $(document).ready(function() {
     $('.found-user-modal').modal('hide');
   });
 
+  $('#friend-list-target').on('click', '.friend', function(e){
+    console.log(e);
+    e.preventDefault();
+    $.ajax({
+      method: 'GET',
+      url: '/api/users/' + $(this).data('user-id') + '/posts',
+      success: getAllPostSuccess,
+      error: getAllPostError
+    });
+  });
 });
 
 function getFriendsSuccess(friends){
@@ -589,18 +599,6 @@ function deleteCommentError(err){
 
 function likeCommentSuccess(comment){
   renderSingleCommentInPlace(comment);
-  var $likeButton = $('#postTarget').find('[data-comment-id="' + comment._id + '"]').find('.like-comment-button');
-  var liked;
-  comment.likes.forEach(function(like){
-    if (like._id.toString() === user._id.toString()) {
-      liked = true;
-    }
-  });
-  if(liked){
-    $likeButton.text("-");
-  } else {
-    $likeButton.text("+");
-  }
   renderButtons();
 }
 
@@ -609,20 +607,7 @@ function likeCommentError(err){
 }
 
 function updateCommentSuccess(comment){
-  console.log(comment);
   renderSingleCommentInPlace(comment);
-  var $likeButton = $('#postTarget').find('[data-comment-id="' + comment._id + '"]').find('.like-comment-button');
-  var liked;
-  comment.likes.forEach(function(like){
-    if (like._id.toString() === user._id.toString()) {
-      liked = true;
-    }
-  });
-  if(liked){
-    $likeButton.text("-");
-  } else {
-    $likeButton.text("+");
-  }
   renderButtons();
 }
 
@@ -632,7 +617,6 @@ function updateCommentError(err){
 
 
 function createCommentSuccess(comment){
-  console.log(comment);
   inputImage = null;
   $('.comment-input').val('');
 }
@@ -645,18 +629,6 @@ function updatePostSuccess(post){
   // console.log('post',post);
   renderSinglePost(post);
   inputImage = null;
-  var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
-  var liked;
-  post.likes.forEach(function(like){
-    if (like._id.toString() === user._id.toString()) {
-      liked = true;
-    }
-  });
-  if(liked){
-    $likeButton.text("-");
-  } else {
-    $likeButton.text("+");
-  }
   renderButtons();
 }
 
@@ -673,20 +645,7 @@ function deletePostError(err){
 }
 
 function likePostSuccess(post){
-  // console.log('post',post);
   renderSinglePost(post);
-  // var $likeButton = $('#postTarget').find('[data-post-id="' + post._id + '"]').find('.like-post-button');
-  // var liked;
-  // post.likes.forEach(function(like){
-  //   if (like._id.toString() === user._id.toString()) {
-  //     liked = true;
-  //   }
-  // });
-  // if(liked){
-  //   $likeButton.text("-");
-  // } else {
-  //   $likeButton.text("+");
-  // }
   renderButtons();
 }
 
@@ -773,14 +732,13 @@ function renderSingleCommentInPlace(comment){
 
 function renderSinglePost(post){
   var postHtml = postTemplate(post);
+  console.log("TEST",$('#postTarget').find('[data-post-id="' + post._id + '"]'));
   $('#postTarget').find('[data-post-id="' + post._id + '"]').replaceWith(postHtml);
 }
 
 function renderPost(post){
-  // console.log(post);
   var postHtml = postTemplate(post);
   $postList.prepend(postHtml);
-  // initPopOver(post._id);
 }
 
 function renderButtons(){
@@ -795,11 +753,11 @@ function renderButtons(){
       $(comment).css('border-right','0px');
     }
   });
+  console.log("rendering");
   $('.like-popover').each(function(idx,likePopover){
     $(likePopover).find('p').each(function(idx,like){
       if(user._id === $(like).data('user-id')){
-        console.log($(like).closest('.input-group-btn').find('name'));
-        $(like).closest('.input-group-btn').find('name').css('background-color', 'rgb(121, 208, 235)');
+        $(like).closest('.input-group-btn').find('.like').css('background-color', '#2895DE');
       }
     });
   });

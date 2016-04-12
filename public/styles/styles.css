@@ -1,15 +1,42 @@
 body{
 background-color: rgb(0, 0, 0);
-color: grey;
+color: white;
 }
 .log-out{
   margin: 8px auto;
 }
+.signup{
+  margin: 8px auto;
+}
+.popover-title{
+  color:rgb(4, 192, 239);
+  margin: 2px;
+  background-color: white;
+  border-radius: 2px;
+  border: 0px;
+  padding:5px;
+  text-align: center;
+  border-bottom: solid 1px rgb(4, 192, 239);
+}
+.popover-content{
+  color:rgb(4, 192, 239);
+  margin: 2px;
+  background-color: white;
+  border: 2px;
+  text-align: center;
+}
+.popover{
+  border-radius: 2px;
+  border: solid 1px rgb(4, 192, 239);
+}
 .btn{
   border-radius: 0;
-  background-color: rgb(200, 200, 200);
+  background-color: rgb(4, 192, 239);
   color: rgb(255, 255, 255);
   border-color: rgb(4, 192, 239);
+}
+.only-comment{
+  margin-top:2px;
 }
 .navbar-brand{
   color:rgb(255, 255, 255);
@@ -27,12 +54,15 @@ color: grey;
 }
 .delete-post-button{
   background-color: rgb(255, 100, 100);
+  border-color: rgb(255, 100, 100);
 }
 .delete-post-button:hover{
   background-color: rgb(235, 70, 55);
+  border-color: rgb(235, 70, 55);
 }
 .delete-post-button:focus{
   background-color: rgb(222, 71, 57);
+  border-color: rgb(222, 71, 57);
 }
 .like-post-button:hover{
   background-color: rgb(135, 200, 255);
@@ -46,6 +76,7 @@ color: grey;
 }
 .delete-friend-button{
   background-color: rgb(255, 100, 100);
+  border-color: rgb(255, 100, 100);
 }
 .delete-friend-button:hover{
   background-color: rgb(235, 70, 55);
@@ -55,6 +86,7 @@ color: grey;
 }
 .add-friend-button{
   background-color: rgb(178, 226, 170);
+  border-color: rgb(178, 226, 170);
 }
 .add-friend-button:hover{
   background-color: rgb(108, 201, 94);
@@ -62,7 +94,9 @@ color: grey;
 .add-friend-button:focus{
   background-color: rgb(77, 183, 61);
 }
+.update-post-button{
 
+}
 img{
   max-height: 300px;
   max-width: 500px;
@@ -185,7 +219,10 @@ img{
   width: 100%;
   padding: 0;
 }
-
+.author{
+  font-size: 18px;
+  font-weight: 600;
+}
 .edit-post-button{
 }
 .comment-content{
@@ -206,6 +243,7 @@ img{
   margin-left: 1px;
   margin-top: 1px;
   border-top: 0px;
+  overflow-y: scroll;
 }
 
 .modal-content{

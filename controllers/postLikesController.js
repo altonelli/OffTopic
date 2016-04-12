@@ -21,7 +21,7 @@ function update(req, res) {
   .deepPopulate('comments.author author author.posts author.posts.author author.posts.likes likes comments.likes author')
   .exec(function(err, post){
     db.User.findOne({_id: post.author._id})
-    .populate('posts posts.likes')
+    .populate('posts posts.likes posts.author posts.comments posts.comments.author posts.comments.likes')
     .exec(function(err,user){
       user.posts.forEach(function(foundPost){
         if (foundPost._id.toString() === post._id.toString()){
