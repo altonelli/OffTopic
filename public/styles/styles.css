@@ -1,6 +1,81 @@
-/*body{
-background-color: black;
-}*/
+body{
+background-color: rgb(240, 240, 240);
+color: grey;
+}
+.log-out{
+  margin: 8px auto;
+}
+.btn{
+  border-radius: 0;
+  background-color: rgb(200, 200, 200);
+  color: white;
+  border-color: rgb(4, 192, 239);
+}
+.navbar-brand{
+  color:rgb(200, 200, 200);
+}
+.btn:hover {
+  background-color: rgba(150, 150, 150,1);
+  border-color: rgb(4, 192, 239);
+}
+.delete-comment-button:hover{
+  background-color: rgb(255, 100, 100);
+}
+.delete-post-button{
+  background-color: rgb(255, 100, 100);
+}
+.delete-post-button:hover{
+  background-color: rgb(235, 70, 55);
+}
+.delete-post-button:focus{
+  background-color: rgb(222, 71, 57);
+}
+.like-post-button:hover{
+  background-color: rgb(135, 200, 255);
+}
+.like-comment-button:hover{
+  background-color: rgb(135, 200, 255);
+}
+.friend{
+  border-bottom: solid 1px rgb(4, 192, 239);
+  padding: 5px;
+}
+
+img{
+  max-height: 300px;
+  max-width: 500px;
+}
+.blue{
+  color: rgb(4, 192, 239);
+}
+
+.off-topic-button{
+  z-index: -2;
+  border-radius: 0px 4px 4px 0px;
+  width: 87.75px;
+  height: 34px;
+}
+
+.comment{
+  border: 1.5px solid rgb(4, 192, 239);
+  border-bottom-width: 0px;
+  border-top-width: 0px;
+  margin-left: 10px;
+  margin-right:10px;
+  padding: 0px;
+}
+
+.navbar{
+  background-color: rgba(0, 0, 0, 1);
+  border-color: rgb(4, 192, 239);
+  border-width: 1.5px;
+}
+
+.btn-default{
+  background-color: rgba(204, 204, 204, .88);
+  color: rgba(245, 245, 245, .88);
+  border-color: rgb(4, 192, 239);
+}
 
 .found-user-modal-body{
   padding: 10px 30px 10px 10px;
@@ -10,21 +85,35 @@ background-color: black;
   /*height: 60px;*/
 }
 
+.like-comment-button{
+  border-left: solid 0px transparent;
+}
+
 .edit-post-button{
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+  width: 55.75px;
+}
+
+#friend-list-target{
+  height:400px;
+  border-top: solid 1px rgb(4, 192, 239);
+  overflow-y: scroll;
 }
 
 #postTarget{
-  padding: 10px;
   /*background-color: grey;*/
-  height: 400px;
+  margin-top: 15px;
+  height: 650px;
   overflow-y: scroll;
+  border-top: solid 1px rgb(4, 192, 239);
 }
 
 .post{
   margin:10px;
-  background-color: white;
+  background-color: rgba(3, 6, 6, 0.0);
+  border: solid 1px rgb(4, 192, 239);
+  padding: 10px;
 }
 
 .comment-dropdown{
@@ -33,22 +122,32 @@ background-color: black;
 .delete-comment-button{
   width:32px;
   padding-left: 8px;
+  margin-right: -2px;
 }
 .comment-form{
   display:inline-flex;
   border-radius: 0px;
   width:100%;
+  margin-left: -2px;
 }
 
 .update-comment-button{
-  width:56px;
+  width:55.75px;
 }
 .edit-comment-button{
-  width:56px;
+  width:55px;
+}
+
+.form-control{
+  border-radius: 0px;
+  border-color: rgb(4, 192, 239);
 }
 
 .comment-edit-input{
-  width: 100%;
+  width: 105% !important;
+  margin-left: -15px;
+  margin-right: -15px;
+  padding-left: 10px;
 }
 
 .post-bar{
@@ -56,14 +155,17 @@ background-color: black;
   padding-right: 80px;
 }
 .comment-bar{
+  margin:0;
+  margin-top: -1px;
   width: 100%;
+  padding: 0;
 }
 
 .edit-post-button{
-  border-radius: 4px 0px 0px 4px;
 }
 .comment-content{
-  /*padding-right:37px;*/
+  padding-left:13px;
+  padding-right: -10px;
 }
 .comment-text{
   width: 100%;
@@ -75,8 +177,8 @@ background-color: black;
   line-height: 1.42857143;
   white-space: nowrap;
   vertical-align: left;
-  border: 1px solid transparent;
-  border-color: #ccc;
+  border: 1px solid rgb(4, 192, 239);
+  margin-left: 1px;
 }
 
 .dropdown-menu{

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Off/Topic</title>
+  <title>OFF/TOPIC</title>
 
   <!-- STYLESHEETS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -37,7 +37,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">Off/Topic</a>
+        <a class="navbar-brand" href="/">OFF<span class="blue">/</span>TOPIC</a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
@@ -48,6 +48,7 @@
             <button type="submit" class="btn btn-default">Submit</button>
           </div>
         </form>
+        <a type="button" class="btn btn-default pull-right log-out" href="/logout">Log Out</a>
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
@@ -55,40 +56,48 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-md-2">
-        <div id="friend-list-target">
-          <script id="friend-template" type="text/x-handlebars-template">
-            <div class="row">
-              <img class="col-xs-4 responsive" src="\{{image}}"/><p class="col-xs-8">\{{username}}</p>
-            </div>
-          </script>
-        </div>
+      <h2 class="text-center">Here's what your friends have been up to...</h2>
     </div>
-      <div class="col-md-8">
-        <h1>Posts</h1>
-        <div class="row">
-          <form class="form-inline" id="newPostForm">
-            <div class="form-group">
-              <div class="input-group">
-                <textarea type="text" class="form-control col-xs-11 post-input" rows:"0" name="text" placeholder="What's on your mind?"></textarea>
-                <span class="input-group-btn">
-                  <button type="submit" class="btn btn-primary btn-lg">Post</button>
-                </span>
-              </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <form class="form-inline col-xs-offset-2" id="newPostForm">
+          <div class="form-group">
+            <div class="input-group">
+              <textarea type="text" class="form-control post-input" rows:"0" name="text" placeholder="What's on your mind?"></textarea>
+              <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary btn-lg">Post</button>
+              </span>
             </div>
-          </form>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+      <div class="row">
+        <h3>Welcome, back <span class="blue">{{username}}</span></h3>
+      </div>
+      <div class="row">
+          <div id="friend-list-target">
+            <script id="friend-template" type="text/x-handlebars-template">
+              <div class="row friend">
+                <img class="col-xs-4 responsive" src="\{{image}}"/><p class="col-xs-8">\{{username}}</p>
+              </div>
+            </script>
+          </div>
         </div>
-        <div id="postTarget" class="">
+      </div>
+        <div id="postTarget" class="col-md-8">
 
           <script id="posts-template" type="text/x-handlebars-template">
 
-            <div class="post" data-post-id=\{{_id}} data-author-id="\{{author._id}}">
-              <div class="only-post">
+            <div class="post container-fluid" data-post-id=\{{_id}} data-author-id="\{{author._id}}">
+              <div class="only-post container-fluid">
                 <div class="row">
 
                   <div class="btn-group edit-post-group pull-right">
                     <button type="button" class="btn btn-warning edit-post-button">Edit</button>
-                    <button type="button" class="btn btn-info update-post-button hidden" style="border-radius: 4px 0px 0px 4px">Save</button>
+                    <button type="button" class="btn btn-info update-post-button hidden">Save</button>
                     <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <span class="glyphicon glyphicon-menu-down"></span>
                     </button>
@@ -117,12 +126,12 @@
                       <button type="button" class="btn btn-info like-post-display" data-toggle="popover" data-trigger="focus" data-placement="bottom">\{{likes.length}}</button>
                       <div class="hidden like-popover">
                         \{{#each likes}}
-                        <p>\{{username}}</p>
+                        <p data-user-id="\{{_id}}">\{{username}}</p>
                         \{{/each}}
                       </div>
                     </span>
                     <form class="comment-form">
-                      <input name="text" class="form-control comment-input" style="border-radius: 0px" placeholder="Comment"/>
+                      <input name="text" class="form-control comment-input" placeholder="Comment"/>
                       <span class="input-group-btn">
                         <button class="btn btn-primary">Comment</button>
                       </span>
@@ -131,10 +140,13 @@
                   </div>
                 </div>
               </div>
-              <div class="only-comment">
+              <div class="only-comment container-fluid">
                 \{{#each comments}}
-                <div class="row comment" data-comment-id="\{{_id}}" data-author-id="\{{author._id}}">
-                  <div class="input-group comment-bar" role="group" aria-label="">
+                <div class="row comment container-fluid" data-comment-id="\{{_id}}" data-author-id="\{{author._id}}">
+                  <div class="row">
+                    <img class="col-xs-offset-1" src="\{{image}}" onError="$(this).toggleClass('hidden')">
+                  </div>
+                  <div class="input-group comment-bar container-fluid" role="group" aria-label="">
                     <span class="input-group-btn">
                       <button type="button" class="btn btn-primary like-comment-button" name="likes" value="1">+</button>
                       <button type="button" class="btn btn-info like-comment-display" data-toggle="popover" data-trigger="focus" data-placement="bottom">\{{likes.length}}</button>
@@ -146,22 +158,20 @@
                     </span>
                     <div class="comment-content">
                       <div class="row">
-                        <img src="">
-                      </div>
-                      <div class="row">
-                        <p class="col-xs-9 comment-text">\{{author.username}}: \{{text}}</p>
+                        <p class="col-xs-9 comment-text">\{{author.username}} <span class="blue">/</span>  \{{text}}</p>
                       </div>
 
                       <form class="comment-edit-form">
                         <div class="comment-edit-padding">
-                          <input name="text" class="form-control comment-edit-input hidden" style="border-radius: 0px" placeholder="Comment" value="\{{text}}"/>
+                          <input name="text" class="form-control comment-edit-input hidden" placeholder="Comment" value="\{{text}}"/>
                         </div>
                       </form>
                     </div>
+                    <span class="off-topic-button btn hidden">OFF<span class="blue">/</span>TOPIC</span>
                     <span class="input-group-btn edit-comment-group comment-dropdown">
                       <div class="btn-group pull-right">
                         <button type="button" class="btn btn-warning edit-comment-button">Edit</button>
-                        <button type="button" class="btn btn-info update-comment-button hidden" style="border-radius: 0px">Save</button>
+                        <button type="button" class="btn btn-info update-comment-button hidden">Save</button>
                         <button type="button" class="btn btn-danger delete-comment-button">
                           <span class="glyphicon glyphicon-trash"></span>
                         </button>
@@ -246,7 +256,6 @@
         </div>
       </div>
     </div>
-  </div>
 
 
 

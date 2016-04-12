@@ -720,7 +720,7 @@ function newPostError(err){
 
 function gifSuccess(json){
   // console.log(json);
-  inputImage = json.data.fixed_height_small_url;
+  inputImage = json.data.fixed_height_downsampled_url;
   // console.log("IMAGE",inputImage);
 }
 
@@ -796,4 +796,9 @@ function renderButtons(){
       $(comment).find('.edit-comment-group').css('visibility', 'hidden');
     }
   });
+  // $('img').each(function(idx,image){
+  //   if ($(image).attr('src') == ''){
+  //     $(image).closest('.comment').css('border-top-width', '0px');
+  //   }
+  // });
 }

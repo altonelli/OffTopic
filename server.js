@@ -59,7 +59,8 @@ app.set('view engine', 'hbs');
 
  app.get('/', function (req, res) {
    if(req.user){
-     res.render('index', {user: JSON.stringify(req.user) + "|| null" });
+     console.log('user',req.user);
+     res.render('index', {username: req.user.username, user: JSON.stringify(req.user) + "|| null" });
    } else {
      res.render('login');
    }
