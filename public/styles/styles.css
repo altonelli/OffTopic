@@ -135,6 +135,7 @@ img{
 
 .found-user-modal-body{
   padding: 10px 30px 10px 10px;
+  color: rgb(4, 192, 239);
 }
 
 .profile-image{
@@ -248,6 +249,7 @@ img{
 
 .modal-content{
   border-radius: 2px;
+  color: grey;
 }
 
 .dropdown-menu{
