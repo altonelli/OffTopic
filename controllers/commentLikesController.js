@@ -50,39 +50,7 @@ function update(req, res) {
     });
   });
 }
-  //
-  // db.Post.findOne({_id: req.params.post})
-  // .populate('comments comments.author likes comments.likes author')
-  // .exec(function(err, post){
-  //   console.log("post",post);
-  //   post.comments.forEach(function(el){
-  //     if(el._id.toString() === req.params.comment.toString()){
-  //         var indexOfLike;
-  //         console.log('comment',el);
-  //         el.likes.forEach(function(like, index){
-  //           if(like._id.toString() === req.user._id.toString()){
-  //             indexOfLike = index;
-  //           }
-  //         });
-  //         // console.log("index",indexOfLike);
-  //         if(indexOfLike >= 0){
-  //           el.likes.splice(indexOfLike,1);
-  //         } else {
-  //           el.likes.push(req.user);
-  //         }
-  //         el.save();
-  //         post.save();
-  //         console.log(post.author.posts);
-  //         // post.author.posts.forEach(function(foundPost, index){
-  //         //   if(foundPost._id.toString() === post._id.toString()){
-  //         //     post.author.posts.splice(index,1,post);
-  //         //   }
-  //         // });
-  //         // post.author.save();
-  //         res.status(200).json(el);
-  //     }
-  //   });
-  // });
+
 
 
 
