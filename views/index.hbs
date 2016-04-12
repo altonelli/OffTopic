@@ -63,7 +63,7 @@
         <form class="form-inline col-xs-offset-2" id="newPostForm">
           <div class="form-group">
             <div class="input-group">
-              <textarea type="text" class="form-control post-input" rows:"0" name="text" placeholder="What's on your mind?"></textarea>
+              <textarea type="text" class="form-control post-input" rows:"0" name="text" placeholder="What's OFF/TOPIC?"></textarea>
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-primary btn-lg">Post</button>
               </span>
@@ -167,7 +167,7 @@
                         </div>
                       </form>
                     </div>
-                    <span class="off-topic-button btn hidden">OFF<span class="blue">/</span>TOPIC</span>
+                    <!-- <span class="off-topic-button btn hidden">OFF<span class="blue">/</span>TOPIC</span> -->
                     <span class="input-group-btn edit-comment-group comment-dropdown">
                       <div class="btn-group pull-right">
                         <button type="button" class="btn btn-warning edit-comment-button">Edit</button>
@@ -188,8 +188,11 @@
 
 
           <script id="comment-template" type="text/x-handlebars-template">
-            <div class="row comment" data-comment-id="\{{_id}}" data-author-id="\{{author._id}}">
-              <div class="input-group comment-bar" role="group" aria-label="">
+
+              <div class="row">
+                <img class="col-xs-offset-1" src="\{{image}}" onError="$(this).toggleClass('hidden')">
+              </div>
+              <div class="input-group comment-bar container-fluid" role="group" aria-label="">
                 <span class="input-group-btn">
                   <button type="button" class="btn btn-primary like-comment-button" name="likes" value="1">+</button>
                   <button type="button" class="btn btn-info like-comment-display" data-toggle="popover" data-trigger="focus" data-placement="bottom">\{{likes.length}}</button>
@@ -200,18 +203,21 @@
                   </div>
                 </span>
                 <div class="comment-content">
-                  <p class="col-xs-9 comment-text">\{{author.username}}: \{{text}}</p>
+                  <div class="row">
+                    <p class="col-xs-9 comment-text">\{{author.username}} <span class="blue">/</span>  \{{text}}</p>
+                  </div>
 
                   <form class="comment-edit-form">
                     <div class="comment-edit-padding">
-                      <input name="text" class="form-control comment-edit-input hidden" style="border-radius: 0px" placeholder="Comment" value="\{{text}}"/>
+                      <input name="text" class="form-control comment-edit-input hidden" placeholder="Comment" value="\{{text}}"/>
                     </div>
                   </form>
                 </div>
+                <!-- <span class="off-topic-button btn hidden">OFF<span class="blue">/</span>TOPIC</span> -->
                 <span class="input-group-btn edit-comment-group comment-dropdown">
                   <div class="btn-group pull-right">
                     <button type="button" class="btn btn-warning edit-comment-button">Edit</button>
-                    <button type="button" class="btn btn-info update-comment-button hidden" style="border-radius: 0px">Save</button>
+                    <button type="button" class="btn btn-info update-comment-button hidden">Save</button>
                     <button type="button" class="btn btn-danger delete-comment-button">
                       <span class="glyphicon glyphicon-trash"></span>
                     </button>
@@ -219,7 +225,6 @@
                 </span>
 
               </div>
-            </div>
           </script>
 
 
@@ -234,10 +239,10 @@
                   <script id="found-user-template" type="text/x-handlebars-template">
                     <div class="row" data-user-id=\{{_id}}>
                       <img  class="profile-image responsive col-xs-2" src=\{{image}}>
-                      <p class="col-xs-4">\{{username}}</p>
+                      <p class="col-xs-3">\{{username}}</p>
                       <button class="btn btn-success view-user-button col-xs-3">View Posts</button>
-                      <button class="btn btn-primary add-friend-button col-xs-3">Add as Friend</button>
-                      <button class="btn btn-danger delete-friend-button hidden col-xs-3">Delete as Friend</button>
+                      <button class="btn btn-primary add-friend-button col-xs-3 col-xs-offset-1">Add as Friend</button>
+                      <button class="btn btn-danger delete-friend-button hidden col-xs-3 col-xs-offset-1">Delete as Friend</button>
                     </div>
                   </script>
                 </div>

@@ -768,14 +768,12 @@ function renderSingleCommentInPlace(comment){
   // console.log("before",$('#postTarget').find('[data-comment-id="' + comment._id + '"]').clone(true).html());
   // console.log("replace by",commentHtml);
   $('#postTarget').find('[data-comment-id="' + comment._id + '"]').html(commentHtml);
+  // $('#postTarget').find('[data-comment-id="' + comment._id + '"]').find('')
 }
 
 function renderSinglePost(post){
   var postHtml = postTemplate(post);
-  // console.log(postHtml);
-  // console.log($('#postTarget').find('[data-post-id="' + post._id + '"]').html());
-  $('#postTarget').find('[data-post-id="' + post._id + '"]').html(postHtml);
-  // initPopOver(post._id);
+  $('#postTarget').find('[data-post-id="' + post._id + '"]').replaceWith(postHtml);
 }
 
 function renderPost(post){
@@ -793,12 +791,10 @@ function renderButtons(){
   });
   $('.comment').each(function(idx,comment){
     if(user._id !== $(comment).data('author-id')){
+      // $(comment).find('.edit-comment-group').toggleClass('hidden');
       $(comment).find('.edit-comment-group').css('visibility', 'hidden');
+      $(comment).css('border-right','0px');
+      // $(comment).find('.off-topic-button').toggleClass('hidden');
     }
   });
-  // $('img').each(function(idx,image){
-  //   if ($(image).attr('src') == ''){
-  //     $(image).closest('.comment').css('border-top-width', '0px');
-  //   }
-  // });
 }

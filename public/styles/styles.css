@@ -40,6 +40,24 @@ color: grey;
   border-bottom: solid 1px rgb(4, 192, 239);
   padding: 5px;
 }
+.delete-friend-button{
+  background-color: rgb(255, 100, 100);
+}
+.delete-friend-button:hover{
+  background-color: rgb(235, 70, 55);
+}
+.delete-friend-button:focus{
+  background-color: rgb(222, 71, 57);
+}
+.add-friend-button{
+  background-color: rgb(178, 226, 170);
+}
+.add-friend-button:hover{
+  background-color: rgb(108, 201, 94);
+}
+.add-friend-button:focus{
+  background-color: rgb(77, 183, 61);
+}
 
 img{
   max-height: 300px;
@@ -51,9 +69,8 @@ img{
 
 .off-topic-button{
   z-index: -2;
-  border-radius: 0px 4px 4px 0px;
   width: 87.75px;
-  height: 34px;
+  height: 34.67px;
 }
 
 .comment{
@@ -62,6 +79,7 @@ img{
   border-top-width: 0px;
   margin-left: 10px;
   margin-right:10px;
+  margin-top: -1px;
   padding: 0px;
 }
 
@@ -149,6 +167,9 @@ img{
   margin-right: -15px;
   padding-left: 10px;
 }
+.comment-input:{
+  height:34px;
+}
 
 .post-bar{
   width:100%;
@@ -179,6 +200,12 @@ img{
   vertical-align: left;
   border: 1px solid rgb(4, 192, 239);
   margin-left: 1px;
+  margin-top: 1px;
+  border-top: 0px;
+}
+
+.found-user-modal{
+  border-radius: 2px;
 }
 
 .dropdown-menu{
