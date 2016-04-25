@@ -40,10 +40,11 @@ function update(req, res) {
 
 
 // export public methods here
+// consider not exporting functionality that doesn't exist - it could confuse future you or other devs
 module.exports = {
-  index: index,
-  create: create,
-  show: show,
-  destroy: destroy,
-  update: update
+  index: index//,
+  // create: create,
+  // show: show,
+  // destroy: destroy,
+  // update: update
 };
