@@ -52,48 +52,30 @@ $(document).ready(function() {
 
   $('#newPostForm').on('submit', function(e){
     e.preventDefault();
-
     var postStr = $('.post-input').val();
     var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
     if (gifTag) {
       requestGif(gifTag).then(function(){
-        $.ajax({
-          method: 'POST',
-          url: '/api/posts',
-          data: {
-            text: $('.post-input').val(),
-            image: inputImage,
-          },
-          success: newPostSuccess,
-          error: newPostError
-        });
-      });
-    } else if (img) {
-      inputImage = img;
-      $.ajax({
-        method: 'POST',
-        url: '/api/posts',
-        data: {
-          text: $('.post-input').val(),
-          image: inputImage,
-        },
-        success: newPostSuccess,
-        error: newPostError
+        makePost(postStr, inputImage); // FIXME: not a fan of this global variable inputImage
       });
     } else {
-      $.ajax({
-        method: 'POST',
-        url: '/api/posts',
-        data: {
-          text: $('.post-input').val(),
-          image: inputImage,
-        },
-        success: newPostSuccess,
-        error: newPostError
-      });
+      makePost(postStr, img);
     }
   });
+
+  function makePost(text, image) {
+    $.ajax({
+      method: 'POST',
+      url: '/api/posts',
+      data: {
+        text: text,
+        image: image,
+      },
+      success: newPostSuccess,
+      error: newPostError
+    });
+  }
 
   $('#postTarget').on('click', '.like-post-button', function(e){
     console.log(e);
@@ -653,6 +635,7 @@ function newPostError(err){
   console.log(err);
 }
 
+// what does this do?
 function gifSuccess(json){
   // console.log(json);
   inputImage = json.data.fixed_height_downsampled_url;
@@ -677,7 +660,7 @@ function gifParser(str){
 
 function imgParser(str){
   var formats = [".jpg", ".jpeg", ".tif", ".png", ".gif"];
-  var word;
+  var word = null;
   var arr = str.split(' ');
   arr.forEach(function(el){
     formats.forEach(function(format){
