@@ -662,13 +662,23 @@ function imgParser(str){
   var formats = [".jpg", ".jpeg", ".tif", ".png", ".gif"];
   var word = null;
   var arr = str.split(' ');
-  arr.forEach(function(el){
-    formats.forEach(function(format){
-      if (el.includes(format)){
-        word = el;
-      }
+  // some or find don't have to run through every item in each array
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+  word = arr.find(function(el) {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+    return formats.some(function(format) {
+      return el.includes(format); // ends some() if truthy
     });
   });
+  //
+  // arr.forEach(function(el){
+  //   formats.forEach(function(format){
+  //     if (el.includes(format)){
+  //       word = el;
+  //     }
+  //   });
+  // });
+  console.log(word);
   return word;
 }
 
