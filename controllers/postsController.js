@@ -4,6 +4,7 @@ var image;
 function index(req, res) {
   db.Post.find({}).populate('author likes comments.author comments.likes').exec(function(err,posts){
     if (err) { res.status(500).json("Sorry, something went wrong on our end while finding the posts."); }
+    // I'm curious when this might happen on an index route.  Wouldn't returning an empty array be correct?
     else if (!posts) { res.status(400).json("Sorry, we couldn't find those posts."); }
     else {
       res.status(200).json(posts);
@@ -12,13 +13,14 @@ function index(req, res) {
 }
 
 function create(req, res) {
+  console.log('creating a post');
   var newPost = new db.Post({
-    author: req.user,
+    author: req.user, //cool
     date: new Date(),
     text: req.body.text,
     image: req.body.image,
-    likes: [],
-    comments: []
+    likes: [], // unnecessary
+    comments: [] // unnecessary
   });
   var userPost = newPost.save(function(err,post){
     if (err) {
@@ -26,7 +28,7 @@ function create(req, res) {
     } else if (!post) {
       res.status(400).json("Sorry, could not find that id while creating the post");
     } else {
-      post.populate('author').populate('likes').populate('comments');
+      post.populate('author');//.populate('likes').populate('comments'); // new posts don't have likes or comments right?
       // console.log(post);
       res.status(200).json(post);
     }

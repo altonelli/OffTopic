@@ -52,59 +52,30 @@ $(document).ready(function() {
 
   $('#newPostForm').on('submit', function(e){
     e.preventDefault();
-
     var postStr = $('.post-input').val();
-    var gif = gifParser(postStr);
+    var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
-    var gifPromise;
-    if (gif) {
-      gifPromise = $.ajax({
-        method: 'GET',
-        url: 'http://api.giphy.com/v1/gifs/random',
-        data: {
-          api_key: 'dc6zaTOxFJmzC',
-          tag: gif,
-        },
-        success: gifSuccess,
-        error: gifError
-      });
-      gifPromise.then(function(){
-        $.ajax({
-          method: 'POST',
-          url: '/api/posts',
-          data: {
-            text: $('.post-input').val(),
-            image: inputImage,
-          },
-          success: newPostSuccess,
-          error: newPostError
-        });
-      });
-    } else if (img) {
-      inputImage = img;
-      $.ajax({
-        method: 'POST',
-        url: '/api/posts',
-        data: {
-          text: $('.post-input').val(),
-          image: inputImage,
-        },
-        success: newPostSuccess,
-        error: newPostError
+    if (gifTag) {
+      requestGif(gifTag).then(function(){
+        makePost(postStr, inputImage); // FIXME: not a fan of this global variable inputImage
       });
     } else {
-      $.ajax({
-        method: 'POST',
-        url: '/api/posts',
-        data: {
-          text: $('.post-input').val(),
-          image: inputImage,
-        },
-        success: newPostSuccess,
-        error: newPostError
-      });
+      makePost(postStr, img);
     }
   });
+
+  function makePost(text, image) {
+    $.ajax({
+      method: 'POST',
+      url: '/api/posts',
+      data: {
+        text: text,
+        image: image,
+      },
+      success: newPostSuccess,
+      error: newPostError
+    });
+  }
 
   $('#postTarget').on('click', '.like-post-button', function(e){
     console.log(e);
@@ -180,21 +151,11 @@ $(document).ready(function() {
 
 
     var postStr = $post.find('.edit-post-form').val();
-    var gif = gifParser(postStr);
+    var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
     var gifPromise;
-    if (gif) {
-      gifPromise = $.ajax({
-        method: 'GET',
-        url: 'http://api.giphy.com/v1/gifs/random',
-        data: {
-          api_key: 'dc6zaTOxFJmzC',
-          tag: gif,
-        },
-        success: gifSuccess,
-        error: gifError
-      });
-      gifPromise.then(function(){
+    if (gifTag) {
+      requestGif(gifTag).then(function(){
         $.ajax({
           method: 'PUT',
           url: '/api/posts/' + postId,
@@ -232,26 +193,16 @@ $(document).ready(function() {
     }
   });
 
+
   $('#postTarget').on('submit', '.comment-form', function(e){
     e.preventDefault();
     var postId = $(this).closest('.post').data('post-id');
     var postStr = $(this).find('.comment-input').val();
-    var gif = gifParser(postStr);
+    var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
     var gifPromise;
-    if (gif) {
-      console.log("in gif");
-      gifPromise = $.ajax({
-        method: 'GET',
-        url: 'http://api.giphy.com/v1/gifs/random',
-        data: {
-          api_key: 'dc6zaTOxFJmzC',
-          tag: gif,
-        },
-        success: gifSuccess,
-        error: gifError
-      });
-      gifPromise.then(function(){
+    if (gifTag) {
+      requestGif(gifTag).then(function(){
         console.log("text in input",$(this).find('.comment-input').val());
         var newComment = $.ajax({
           method: 'POST',
@@ -385,22 +336,11 @@ $(document).ready(function() {
     var commentId = $comment.data('comment-id');
 
     var postStr = $comment.find('.comment-edit-input').val();
-    var gif = gifParser(postStr);
+    var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
     var gifPromise;
-    if (gif) {
-      console.log("in gif");
-      gifPromise = $.ajax({
-        method: 'GET',
-        url: 'http://api.giphy.com/v1/gifs/random',
-        data: {
-          api_key: 'dc6zaTOxFJmzC',
-          tag: gif,
-        },
-        success: gifSuccess,
-        error: gifError
-      });
-      gifPromise.then(function(){
+    if (gifTag) {
+      requestGif(gifTag).then(function(){
         $.ajax({
           method: 'PUT',
           url: '/api/posts/' + postId + '/comments/' + commentId,
@@ -534,6 +474,24 @@ $(document).ready(function() {
     });
   });
 });
+
+
+// input String: tag text to search giphy
+// output jqXHR (promise like)
+function requestGif(tag) {
+  console.log("in requestGif");
+  return $.ajax({
+    method: 'GET',
+    url: 'http://api.giphy.com/v1/gifs/random',
+    data: {
+      api_key: 'dc6zaTOxFJmzC',
+      tag: tag,
+    },
+    success: gifSuccess,
+    error: gifError
+  });
+}
+
 
 function getFriendsSuccess(friends){
   console.log(friends);
@@ -677,6 +635,7 @@ function newPostError(err){
   console.log(err);
 }
 
+// what does this do?
 function gifSuccess(json){
   // console.log(json);
   inputImage = json.data.fixed_height_downsampled_url;
@@ -701,15 +660,25 @@ function gifParser(str){
 
 function imgParser(str){
   var formats = [".jpg", ".jpeg", ".tif", ".png", ".gif"];
-  var word;
+  var word = null;
   var arr = str.split(' ');
-  arr.forEach(function(el){
-    formats.forEach(function(format){
-      if (el.includes(format)){
-        word = el;
-      }
+  // some or find don't have to run through every item in each array
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+  word = arr.find(function(el) {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+    return formats.some(function(format) {
+      return el.includes(format); // ends some() if truthy
     });
   });
+  //
+  // arr.forEach(function(el){
+  //   formats.forEach(function(format){
+  //     if (el.includes(format)){
+  //       word = el;
+  //     }
+  //   });
+  // });
+  console.log(word);
   return word;
 }
 
