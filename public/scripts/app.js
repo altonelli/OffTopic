@@ -54,21 +54,10 @@ $(document).ready(function() {
     e.preventDefault();
 
     var postStr = $('.post-input').val();
-    var gif = gifParser(postStr);
+    var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
-    var gifPromise;
-    if (gif) {
-      gifPromise = $.ajax({
-        method: 'GET',
-        url: 'http://api.giphy.com/v1/gifs/random',
-        data: {
-          api_key: 'dc6zaTOxFJmzC',
-          tag: gif,
-        },
-        success: gifSuccess,
-        error: gifError
-      });
-      gifPromise.then(function(){
+    if (gifTag) {
+      requestGif(gifTag).then(function(){
         $.ajax({
           method: 'POST',
           url: '/api/posts',
@@ -180,21 +169,11 @@ $(document).ready(function() {
 
 
     var postStr = $post.find('.edit-post-form').val();
-    var gif = gifParser(postStr);
+    var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
     var gifPromise;
-    if (gif) {
-      gifPromise = $.ajax({
-        method: 'GET',
-        url: 'http://api.giphy.com/v1/gifs/random',
-        data: {
-          api_key: 'dc6zaTOxFJmzC',
-          tag: gif,
-        },
-        success: gifSuccess,
-        error: gifError
-      });
-      gifPromise.then(function(){
+    if (gifTag) {
+      requestGif(gifTag).then(function(){
         $.ajax({
           method: 'PUT',
           url: '/api/posts/' + postId,
@@ -232,26 +211,16 @@ $(document).ready(function() {
     }
   });
 
+
   $('#postTarget').on('submit', '.comment-form', function(e){
     e.preventDefault();
     var postId = $(this).closest('.post').data('post-id');
     var postStr = $(this).find('.comment-input').val();
-    var gif = gifParser(postStr);
+    var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
     var gifPromise;
-    if (gif) {
-      console.log("in gif");
-      gifPromise = $.ajax({
-        method: 'GET',
-        url: 'http://api.giphy.com/v1/gifs/random',
-        data: {
-          api_key: 'dc6zaTOxFJmzC',
-          tag: gif,
-        },
-        success: gifSuccess,
-        error: gifError
-      });
-      gifPromise.then(function(){
+    if (gifTag) {
+      requestGif(gifTag).then(function(){
         console.log("text in input",$(this).find('.comment-input').val());
         var newComment = $.ajax({
           method: 'POST',
@@ -385,22 +354,11 @@ $(document).ready(function() {
     var commentId = $comment.data('comment-id');
 
     var postStr = $comment.find('.comment-edit-input').val();
-    var gif = gifParser(postStr);
+    var gifTag = gifParser(postStr);
     var img = imgParser(postStr);
     var gifPromise;
-    if (gif) {
-      console.log("in gif");
-      gifPromise = $.ajax({
-        method: 'GET',
-        url: 'http://api.giphy.com/v1/gifs/random',
-        data: {
-          api_key: 'dc6zaTOxFJmzC',
-          tag: gif,
-        },
-        success: gifSuccess,
-        error: gifError
-      });
-      gifPromise.then(function(){
+    if (gifTag) {
+      requestGif(gifTag).then(function(){
         $.ajax({
           method: 'PUT',
           url: '/api/posts/' + postId + '/comments/' + commentId,
@@ -534,6 +492,24 @@ $(document).ready(function() {
     });
   });
 });
+
+
+// input String: tag text to search giphy
+// output jqXHR (promise like)
+function requestGif(tag) {
+  console.log("in requestGif");
+  return $.ajax({
+    method: 'GET',
+    url: 'http://api.giphy.com/v1/gifs/random',
+    data: {
+      api_key: 'dc6zaTOxFJmzC',
+      tag: tag,
+    },
+    success: gifSuccess,
+    error: gifError
+  });
+}
+
 
 function getFriendsSuccess(friends){
   console.log(friends);
